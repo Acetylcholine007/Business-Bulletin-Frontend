@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { LS_USER_DATA } from "../../utils/constants";
 
 let logoutTimer;
@@ -13,7 +13,7 @@ export const useAuth = () => {
   const [contactNo, setContactNo] = useState(null);
   const [defaultBuoy, setDefaultBuoy] = useState(null);
   const [accountType, setAccountType] = useState(1);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const updateLocalUserData = (newFirstName, newLastName, newContactNo) => {
     setFirstname(newFirstName);
@@ -72,7 +72,7 @@ export const useAuth = () => {
       setDefaultBuoy(buoy);
       setToken(token);
       setAccountType(accType);
-      history.push("/");
+      navigate("/");
     },
     []
   );
@@ -86,7 +86,7 @@ export const useAuth = () => {
     setContactNo(null);
     setDefaultBuoy(null);
     localStorage.removeItem(LS_USER_DATA);
-    history.push("/");
+    navigate("/");
   }, []);
 
   useEffect(() => {

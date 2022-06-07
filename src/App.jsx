@@ -1,45 +1,51 @@
-import { useState } from 'react'
-import logo from './logo.svg'
-import './App.css'
+import { createTheme, ThemeProvider } from "@mui/material";
+import { amber, green } from "@mui/material/colors";
+import { useState } from "react";
+import "./App.css";
+import AdminLayout from "./layouts/AdminLayout";
+import PublicLayout from "./layouts/PublicLayout";
+import UserLayout from "./layouts/UserLayout";
+import AuthContextProvider from "./shared/contexts/AuthContext";
+import LoadingContextProvider from "./shared/contexts/LoadingContext";
+import SnackbarContextProvider from "./shared/contexts/SnackbarContext";
+import { useAuth } from "./shared/hooks/useAuth";
+
+const theme = createTheme({
+  palette: {
+    primary: green,
+    secondary: amber,
+  },
+});
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { token, login, logout, userId, accountType, firstname, lastname } =
+    useAuth();
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.jsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
+    <ThemeProvider theme={theme}>
+      <SnackbarContextProvider>
+        <LoadingContextProvider>
+          <AuthContextProvider
+            value={{
+              isLoggedIn: !!token,
+              token: token,
+              userId: userId,
+              accountType: accountType,
+              firstname: firstname,
+              lastname: lastname,
+              login: login,
+              logout: logout,
+            }}
           >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
-    </div>
-  )
+            {/* {!!token && accountType == 1 && <UserLayout />}
+            {!!token && accountType == 2 && <AdminLayout />}
+            {!token && <PublicLayout />} */}
+            <UserLayout/>
+          </AuthContextProvider>
+        </LoadingContextProvider>
+      </SnackbarContextProvider>
+    </ThemeProvider>
+  );
 }
 
-export default App
+export default App;

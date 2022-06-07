@@ -28,7 +28,7 @@ import {
   LogoutSharp,
   Menu,
 } from "@mui/icons-material";
-import UserRoutes, { userRoutes } from "../routes/UserRoutes";
+import AdminRoutes, { adminRoutes } from "../routes/AdminRoutes";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const drawerWidth = 240;
@@ -98,7 +98,7 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-const UserLayout = () => {
+const AdminLayout = () => {
   const { loadingParams } = useContext(LoadingContext);
   const { snackbarParams, snackbarDispatch } = useContext(SnackbarContext);
   const [open, setOpen] = useState(false);
@@ -161,7 +161,7 @@ const UserLayout = () => {
         </DrawerHeader>
         <Divider />
         <List>
-          {userRoutes.map((route) => (
+          {adminRoutes.map((route) => (
             <ListItem
               disablePadding
               sx={{ display: "block" }}
@@ -251,7 +251,7 @@ const UserLayout = () => {
             p: 3,
           }}
         >
-          <UserRoutes />
+          <AdminRoutes />
         </Box>
         <Snackbar
           anchorOrigin={{
@@ -277,4 +277,4 @@ const UserLayout = () => {
   );
 };
 
-export default UserLayout;
+export default AdminLayout;
