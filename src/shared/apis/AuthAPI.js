@@ -2,22 +2,14 @@ import requestAxios from "../../utils/requestAxios";
 
 const login = async (email, password, callback, errorCallback) => {
   let response = await requestAxios(
-    "/auth/user/login",
+    "/auth/login",
     { email, password },
     "POST",
     "application/json"
   );
   if (response.status === 200) {
     console.log(response);
-    callback(
-      response.user.userId,
-      response.user.token,
-      response.user.firstname,
-      response.user.lastname,
-      response.user.contactNo,
-      response.user.defaultBuoy,
-      response.user.accountType
-    );
+    callback(response.data);
   } else {
     errorCallback(response.data.message || "Failed to login");
   }
@@ -26,7 +18,7 @@ const login = async (email, password, callback, errorCallback) => {
 
 const signup = async (data, callback, errorCallback) => {
   let response = await requestAxios(
-    "/auth/user/signup",
+    "/auth/signup",
     data,
     "POST",
     "application/json"
@@ -42,7 +34,7 @@ const signup = async (data, callback, errorCallback) => {
 
 const resendConfirmation = async (email, callback, errorCallback) => {
   let response = await requestAxios(
-    "/auth/user/sendVerification",
+    "/auth/sendVerification",
     { email },
     "POST",
     "application/json"
@@ -58,7 +50,7 @@ const resendConfirmation = async (email, callback, errorCallback) => {
 
 const sendResetPassword = async (email, callback, errorCallback) => {
   let response = await requestAxios(
-    "/auth/user/sendResetPassword",
+    "/auth/sendResetPassword",
     { email },
     "POST",
     "application/json"
