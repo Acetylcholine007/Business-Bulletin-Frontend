@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 
 import NotFoundPage from "../shared/pages/NotFoundPage";
 import BusinessPage from "../views/businessView/pages/BusinessPage";
+import BusinessCreator from "../views/profileView/pages/BusinessCreator";
 import BusinessEditor from "../views/profileView/pages/BusinessEditor";
 import ProfilePage from "../views/profileView/pages/ProfilePage";
 
@@ -11,7 +12,7 @@ const UserRoutes = () => {
     <Routes>
       <Route path="/" element={<BusinessPage />} />
       <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/profile/businesses/new" element={<BusinessEditor />} />
+      <Route path="/profile/businesses/new" element={<BusinessCreator />} />
       <Route
         path="/profile/businesses/:businessId/edit"
         element={<BusinessEditor />}

@@ -6,6 +6,7 @@ import { SnackbarContext } from "../../../shared/contexts/SnackbarContext";
 
 export const profileController = () => {
   const [businesses, setBusinesses] = useState();
+  const [editMode, setEditMode] = useState(false);
   const [user, setUser] = useState();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -20,19 +21,20 @@ export const profileController = () => {
   const { loadingDispatch } = useContext(LoadingContext);
   const navigate = useNavigate();
 
-  useEffect(() => {
-
-  }, []);
+  useEffect(() => {}, []);
 
   return {
     businesses,
     user,
     setUser,
+    editMode,
+    setEditMode,
     anchorEl,
     setAnchorEl,
     open,
     menuHandler,
     handleClose,
+    selectedIndex,
     setSelectedIndex,
     navigate,
   };

@@ -40,7 +40,7 @@ function App() {
             {/* {!!token && accountType == 1 && <UserLayout />}
             {!!token && accountType == 2 && <AdminLayout />}
             {!token && <PublicLayout />} */}
-            <UserLayout/>
+            <AdminLayout />
           </AuthContextProvider>
         </LoadingContextProvider>
       </SnackbarContextProvider>

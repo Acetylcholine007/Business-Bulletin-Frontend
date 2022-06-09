@@ -1,4 +1,4 @@
-import { AddCircleSharp, Delete } from "@mui/icons-material";
+import { AddCircleSharp, AddSharp, Delete } from "@mui/icons-material";
 import {
   Autocomplete,
   Avatar,
@@ -17,9 +17,9 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import { businessEditorController } from "../controllers/businessEditorController";
+import { businessCreatorController } from "../controllers/businessCreatorController";
 
-const BusinessEditor = () => {
+const BusinessCreator = () => {
   const {
     businessInfo,
     setBusinessInfo,
@@ -37,7 +37,7 @@ const BusinessEditor = () => {
     setTags,
     saveHandler,
     navigate,
-  } = businessEditorController();
+  } = businessCreatorController();
 
   return (
     <Container sx={{ height: "100%" }}>
@@ -242,4 +242,4 @@ const BusinessEditor = () => {
   );
 };
 
-export default BusinessEditor;
+export default BusinessCreator;

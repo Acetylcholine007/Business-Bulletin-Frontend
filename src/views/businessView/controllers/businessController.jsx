@@ -10,12 +10,19 @@ export const businessController = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const [query, setQuery] = useState("");
   const [queryTarget, setQueryTarget] = useState("Name");
+  const [tags, setTags] = useState([
+    { _id: "ABCD", name: "Food" },
+    { _id: "ABCD", name: "Car" },
+    { _id: "ABCD", name: "House" },
+  ]);
+  const [selectedTags, setSelectedTags] = useState([]);
   const [entity, setEntity] = useState("Business");
   const [displayMode, setDisplayMode] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { loadingDispatch } = useContext(LoadingContext);
   const { snackbarDispatch } = useContext(SnackbarContext);
   const searchBoxRef = useRef();
+  const searchAreaRef = useRef();
 
   useEffect(() => {
     switch (entity) {
@@ -87,5 +94,9 @@ export const businessController = () => {
     tabIndex,
     setTabIndex,
     searchBoxRef,
+    searchAreaRef,
+    tags,
+    selectedTags,
+    setSelectedTags,
   };
 };
