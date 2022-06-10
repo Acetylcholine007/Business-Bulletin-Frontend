@@ -134,6 +134,15 @@
   - **Query parameters:** `query`, `page`, and `queryTarget`
   - **Accessibility:** Public
 
+- GET /businesses/user/:userId
+
+  - **Usage:** For retrieving list of User businesses
+  - **Headers:** `{Authorization: Bearer token}`
+  - **Request Body:** None
+  - **Response:** `{message: String, businesses: [Business], totalItems: Number}`
+  - **Query parameters:** `query`, `page`, and `queryTarget`
+  - **Accessibility:** User (Owner)
+
 - GET /businesses/:businessId
 
   - **Usage:** For retrieving sepecific Business

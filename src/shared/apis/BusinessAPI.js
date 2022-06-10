@@ -12,15 +12,51 @@ const getBusinesses = async (
     `/businesses?query=${query}&page=${page}&queryTarget=${queryTarget}`
   );
   if (response.status === 200) {
+    // snackbarDispatch({
+    //   type: "SET_PARAMS",
+    //   payload: {
+    //     message: "Businesses Fetched",
+    //     isOpen: true,
+    //     severity: "success",
+    //   },
+    // });
+    callback(response);
+  } else {
     snackbarDispatch({
       type: "SET_PARAMS",
       payload: {
-        message: "Businesses Fetched",
+        message: "Failed to get businesses",
         isOpen: true,
-        severity: "success",
+        severity: "error",
       },
     });
-    callback(response.data);
+  }
+  loadingDispatch({ type: "SET_PARAMS", payload: { isOpen: false } });
+};
+
+const getUserBusinesses = async (
+  query,
+  page,
+  queryTarget,
+  loadingDispatch,
+  snackbarDispatch,
+  callback,
+  userId
+) => {
+  let response = await requestAxios(
+    `/businesses/user/:${userId}d?query=${query}&page=${page}&queryTarget=${queryTarget}`
+  );
+  console.log(response);
+  if (response.status === 200) {
+    // snackbarDispatch({
+    //   type: "SET_PARAMS",
+    //   payload: {
+    //     message: "Businesses Fetched",
+    //     isOpen: true,
+    //     severity: "success",
+    //   },
+    // });
+    callback(response);
   } else {
     snackbarDispatch({
       type: "SET_PARAMS",
@@ -35,22 +71,22 @@ const getBusinesses = async (
 };
 
 const getBusiness = async (
-  userId,
+  businessId,
   loadingDispatch,
   snackbarDispatch,
   callback
 ) => {
-  let response = await requestAxios(`/businesses/${userId}`);
+  let response = await requestAxios(`/businesses/${businessId}`);
   if (response.status === 200) {
-    snackbarDispatch({
-      type: "SET_PARAMS",
-      payload: {
-        message: "Business Fetched",
-        isOpen: true,
-        severity: "success",
-      },
-    });
-    callback(response.data);
+    // snackbarDispatch({
+    //   type: "SET_PARAMS",
+    //   payload: {
+    //     message: "Business Fetched",
+    //     isOpen: true,
+    //     severity: "success",
+    //   },
+    // });
+    callback(response);
   } else {
     snackbarDispatch({
       type: "SET_PARAMS",
@@ -242,10 +278,12 @@ const deleteBusiness = async (
 
 const BusinessAPI = {
   getBusinesses,
+  getUserBusinesses,
   getBusiness,
   createBusiness,
   verifyBusiness,
   allowBusiness,
+  editBusiness,
   deleteBusiness,
 };
 

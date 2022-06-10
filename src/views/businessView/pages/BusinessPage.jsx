@@ -20,11 +20,11 @@ import { businessController } from "../controllers/businessController";
 
 const BusinessPage = () => {
   const {
-    selectedIndex,
-    setSelectedIndex,
-    tabIndex,
-    setTabIndex,
+    businesses,
+    products,
+    services,
     page,
+    setPage,
     totalItems,
     setQuery,
     queryTarget,
@@ -33,6 +33,10 @@ const BusinessPage = () => {
     changeEntity,
     displayMode,
     setDisplayMode,
+    selectedIndex,
+    setSelectedIndex,
+    tabIndex,
+    setTabIndex,
     searchBoxRef,
     searchAreaRef,
     tags,
@@ -80,6 +84,7 @@ const BusinessPage = () => {
             setSelectedIndex={setSelectedIndex}
             page={page}
             totalItems={totalItems}
+            businesses={businesses}
           />
         </Grid>
         <Grid
@@ -91,7 +96,12 @@ const BusinessPage = () => {
             display: { xs: "none", md: "block" },
           }}
         >
-          <DetailsPane tabIndex={tabIndex} setTabIndex={setTabIndex} />
+          <DetailsPane
+            tabIndex={tabIndex}
+            selectedIndex={selectedIndex}
+            setTabIndex={setTabIndex}
+            businesses={businesses}
+          />
         </Grid>
       </Grid>
     </Container>

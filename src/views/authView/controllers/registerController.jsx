@@ -10,6 +10,7 @@ export const registerController = () => {
   const [contactNo, setContactNo] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [profileUri, setProfileUri] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const { snackbarDispatch } = useContext(SnackbarContext);
   const { loadingDispatch } = useContext(LoadingContext);
@@ -19,7 +20,7 @@ export const registerController = () => {
     event.preventDefault();
     loadingDispatch({ type: "SET_PARAMS", payload: { isOpen: true } });
     await AuthAPI.signup(
-      { firstname, lastname, contactNo, email, password },
+      { firstname, lastname, contactNo, email, password, profileUri },
       (isSuccess) => {
         loadingDispatch({ type: "SET_PARAMS", payload: { isOpen: false } });
         navigate({ pathname: "/login", state: { toVerify: isSuccess } });
@@ -49,6 +50,8 @@ export const registerController = () => {
     setPassword,
     email,
     setEmail,
+    profileUri,
+    setProfileUri,
     showPassword,
     setShowPassword,
     registerHandler,

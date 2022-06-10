@@ -3,6 +3,7 @@ import {
   Box,
   Card,
   CardContent,
+  CircularProgress,
   List,
   ListItem,
   ListItemAvatar,
@@ -13,89 +14,91 @@ import {
 } from "@mui/material";
 import React from "react";
 
-const DetailsPane = ({ tabIndex, setTabIndex }) => {
-  return (
-    <Card
-      sx={{
-        p: 3,
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-      }}
-      elevation={4}
-    >
-      <Typography variant="h5">{`Business Name`}</Typography>
-      <Typography variant="h6">Business Tagline</Typography>
-      <Box sx={{ borderBottom: 1, borderTop: 1, borderColor: "divider" }}>
-        <Tabs
-          value={tabIndex}
-          onChange={(e, val) => setTabIndex(val)}
-          variant="fullWidth"
-        >
-          <Tab label="Products" />
-          <Tab label="Services" />
-        </Tabs>
-      </Box>
-      <CardContent sx={{ flexGrow: 1, overflowY: "auto" }}>
-        {tabIndex === 0 && (
-          <List>
-            {[1, 2, 3, 4, 5].map((item, index) => (
-              <ListItem alignItems="flex-start" key={index}>
-                <ListItemAvatar>
-                  <Avatar alt="Product Image" src="url('')" />
-                </ListItemAvatar>
-                <ListItemText
-                  primary="Product Name"
-                  secondary={
-                    <>
-                      <Typography variant="p" color="text.primary">
-                        Price: Php 100
-                      </Typography>
-                      <Typography component={"div"} variant="body2">
-                        Lorem ipsum, dolor sit amet consectetur adipisicing
-                        elit. Fuga voluptatum molestiae animi tempora fugit
-                        saepe optio, laborum ipsum atque, dolore beatae maiores
-                        aspernatur dolor impedit vitae illum nihil! Esse,
-                        pariatur!
-                      </Typography>
-                    </>
-                  }
-                />
-              </ListItem>
-            ))}
-          </List>
-        )}
-        {tabIndex === 1 && (
-          <List>
-            {[1, 2, 3].map((item, index) => (
-              <ListItem alignItems="flex-start" key={index}>
-                <ListItemAvatar>
-                  <Avatar alt="Product Image" src="url('')" />
-                </ListItemAvatar>
-                <ListItemText
-                  primary="Service Name"
-                  secondary={
-                    <>
-                      <Typography variant="p" color="text.primary">
-                        Price: Php 100
-                      </Typography>
-                      <Typography component={"div"} variant="body2">
-                        Lorem ipsum, dolor sit amet consectetur adipisicing
-                        elit. Fuga voluptatum molestiae animi tempora fugit
-                        saepe optio, laborum ipsum atque, dolore beatae maiores
-                        aspernatur dolor impedit vitae illum nihil! Esse,
-                        pariatur!
-                      </Typography>
-                    </>
-                  }
-                />
-              </ListItem>
-            ))}
-          </List>
-        )}
-      </CardContent>
-    </Card>
-  );
+const DetailsPane = ({ tabIndex, selectedIndex, setTabIndex, businesses }) => {
+  if (businesses !== null && businesses.length !== 0) {
+    return (
+      <Card
+        sx={{
+          p: 3,
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+        elevation={4}
+      >
+        <Typography variant="h5">{businesses[selectedIndex].name}</Typography>
+        <Typography variant="h6">{businesses[selectedIndex].description}</Typography>
+        <Box sx={{ borderBottom: 1, borderTop: 1, borderColor: "divider" }}>
+          <Tabs
+            value={tabIndex}
+            onChange={(e, val) => setTabIndex(val)}
+            variant="fullWidth"
+          >
+            <Tab label="Products" />
+            <Tab label="Services" />
+          </Tabs>
+        </Box>
+        <CardContent sx={{ flexGrow: 1, overflowY: "auto" }}>
+          {tabIndex === 0 && (
+            <List>
+              {businesses[selectedIndex].products.map((product, index) => (
+                <ListItem alignItems="flex-start" key={index}>
+                  <ListItemAvatar>
+                    <Avatar
+                      alt="Product Image"
+                      src={`url('${product.imagesUri[0]}')`}
+                    />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={product.name}
+                    secondary={
+                      <>
+                        <Typography variant="p" color="text.primary">
+                          {product.price}
+                        </Typography>
+                        <Typography component={"div"} variant="body2">
+                          {product.description}
+                        </Typography>
+                      </>
+                    }
+                  />
+                </ListItem>
+              ))}
+            </List>
+          )}
+          {tabIndex === 1 && (
+            <List>
+              {businesses[selectedIndex].services.map((service, index) => (
+                <ListItem alignItems="flex-start" key={index}>
+                  <ListItemAvatar>
+                    <Avatar
+                      alt="Product Image"
+                      src={`url('${service.imagesUri[0]}')`}
+                    />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={service.name}
+                    secondary={
+                      <>
+                        <Typography variant="p" color="text.primary">
+                          {service.price}
+                        </Typography>
+                        <Typography component={"div"} variant="body2">
+                          {service.description}
+                        </Typography>
+                      </>
+                    }
+                  />
+                </ListItem>
+              ))}
+            </List>
+          )}
+        </CardContent>
+      </Card>
+    );
+  } else {
+    return <CircularProgress />;
+  }
 };
 
 export default DetailsPane;

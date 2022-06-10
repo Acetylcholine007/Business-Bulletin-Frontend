@@ -1,17 +1,17 @@
 import requestAxios from "../../utils/requestAxios";
 
-const getTags = async (loadingDispatch, snackbarDispatch, callback) => {
+const getTags = async (setLoading, snackbarDispatch, callback) => {
   let response = await requestAxios(`/tags`);
   if (response.status === 200) {
-    snackbarDispatch({
-      type: "SET_PARAMS",
-      payload: {
-        message: "Tags Fetched",
-        isOpen: true,
-        severity: "success",
-      },
-    });
-    callback(response.data);
+    // snackbarDispatch({
+    //   type: "SET_PARAMS",
+    //   payload: {
+    //     message: "Tags Fetched",
+    //     isOpen: true,
+    //     severity: "success",
+    //   },
+    // });
+    callback(response);
   } else {
     snackbarDispatch({
       type: "SET_PARAMS",
@@ -22,20 +22,20 @@ const getTags = async (loadingDispatch, snackbarDispatch, callback) => {
       },
     });
   }
-  loadingDispatch({ type: "SET_PARAMS", payload: { isOpen: false } });
+  setLoading(false);
 };
 
 const getTag = async (tagId, loadingDispatch, snackbarDispatch, callback) => {
   let response = await requestAxios(`/tags/${tagId}`);
   if (response.status === 200) {
-    snackbarDispatch({
-      type: "SET_PARAMS",
-      payload: {
-        message: "Tag Fetched",
-        isOpen: true,
-        severity: "success",
-      },
-    });
+    // snackbarDispatch({
+    //   type: "SET_PARAMS",
+    //   payload: {
+    //     message: "Tag Fetched",
+    //     isOpen: true,
+    //     severity: "success",
+    //   },
+    // });
     callback(response.data);
   } else {
     snackbarDispatch({

@@ -36,11 +36,10 @@ export const signinController = () => {
       }
     );
     if (response.status === 403) {
-      console.log("reached");
       setShowResendVerification(true);
     }
     loadingDispatch({ type: "SET_PARAMS", payload: { isOpen: false } });
-    history.push("/");
+    navigate("/");
   };
 
   const verificationHandler = async () => {

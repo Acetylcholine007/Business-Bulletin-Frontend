@@ -1,69 +1,84 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import BusinessAPI from "../../../shared/apis/BusinessAPI";
+import ProductAPI from "../../../shared/apis/ProductAPI";
+import ServiceAPI from "../../../shared/apis/ServiceAPI";
+import TagAPI from "../../../shared/apis/TagAPI";
 import { LoadingContext } from "../../../shared/contexts/LoadingContext";
 import { SnackbarContext } from "../../../shared/contexts/SnackbarContext";
 
 export const businessController = () => {
   const [businesses, setBusinesses] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [services, setServices] = useState([]);
   const [page, setPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const [tabIndex, setTabIndex] = useState(0);
   const [query, setQuery] = useState("");
   const [queryTarget, setQueryTarget] = useState("Name");
-  const [tags, setTags] = useState([
-    { _id: "ABCD", name: "Food" },
-    { _id: "ABCD", name: "Car" },
-    { _id: "ABCD", name: "House" },
-  ]);
+  const [tags, setTags] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [entity, setEntity] = useState("Business");
   const [displayMode, setDisplayMode] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [tagLoading, setTagLoading] = useState(true);
   const { loadingDispatch } = useContext(LoadingContext);
   const { snackbarDispatch } = useContext(SnackbarContext);
   const searchBoxRef = useRef();
   const searchAreaRef = useRef();
 
   useEffect(() => {
+    TagAPI.getTags(setTagLoading, snackbarDispatch, (data) => {
+      setTags(data.tags);
+    });
+  }, []);
+
+  useEffect(() => {
     switch (entity) {
-      case "business":
+      case "Business":
         BusinessAPI.getBusinesses(
+          query,
+          page,
+          queryTarget.toLowerCase(),
           loadingDispatch,
           snackbarDispatch,
-          { page, query, queryTarget },
           (data) => {
+            console.log(data.businesses)
             setBusinesses(data.businesses);
             setTotalItems(data.totalItems);
           }
         );
         break;
-      case "product":
-        BusinessAPI.getBusinesses(
+      case "Product":
+        ProductAPI.getProducts(
+          query,
+          page,
           loadingDispatch,
           snackbarDispatch,
-          { page, query, queryTarget },
           (data) => {
-            setBusinesses(data.businesses);
+            setProducts(data.products);
             setTotalItems(data.totalItems);
           }
         );
         break;
-      case "service":
-        BusinessAPI.getBusinesses(
+      case "Service":
+        ServiceAPI.getBusinesses(
+          query,
+          page,
           loadingDispatch,
           snackbarDispatch,
-          { page, query, queryTarget },
           (data) => {
-            setBusinesses(data.businesses);
+            setServices(data.services);
             setTotalItems(data.totalItems);
           }
         );
         break;
       default:
         BusinessAPI.getBusinesses(
+          query,
+          page,
+          queryTarget.toLowerCase(),
           loadingDispatch,
           snackbarDispatch,
-          { page, query, queryTarget },
           (data) => {
             setBusinesses(data.businesses);
             setTotalItems(data.totalItems);
@@ -75,10 +90,13 @@ export const businessController = () => {
   const changeEntity = (newEntity) => {
     setEntity(newEntity);
     setQueryTarget("Name");
+    setPage(1);
   };
 
   return {
     businesses,
+    products,
+    services,
     page,
     setPage,
     totalItems,
