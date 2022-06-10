@@ -20,7 +20,7 @@ const style = {
   p: 4,
 };
 
-const PasswordResetModal = ({ open, handleClose, handleSubmit }) => {
+const PasswordResetDialog = ({ open, handleClose, handleSubmit }) => {
   const [email, setEmail] = useState("");
 
   useEffect(() => {
@@ -53,4 +53,4 @@ const PasswordResetModal = ({ open, handleClose, handleSubmit }) => {
   );
 };
 
-export default PasswordResetModal;
+export default PasswordResetDialog;

@@ -16,7 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import PasswordResetModal from "../components/PasswordResetModal";
+import PasswordResetDialog from "../components/PasswordResetDialog";
 import { signinController } from "../controllers/signinController";
 
 const SigninPage = () => {
@@ -133,7 +133,7 @@ const SigninPage = () => {
           </Button>
         </Stack>
       </Card>
-      <PasswordResetModal
+      <PasswordResetDialog
         open={open}
         handleClose={handleClose}
         handleSubmit={passwordResetHandler}

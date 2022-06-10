@@ -1,4 +1,4 @@
-const API_URL = "http://192.168.1.18:8000";
+const API_URL = "http://192.168.1.32:8000";
 
 const LS_USER_DATA = "userData";
 const TOKEN_EXPIRATION = new Date(new Date().getTime() + 1000 * 60 * 60);
