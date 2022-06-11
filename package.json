@@ -18,7 +18,9 @@
     "luxon": "^2.4.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-google-maps": "^9.4.5",
     "react-router-dom": "^6.3.0",
+    "recompose": "^0.30.0",
     "socket.io-client": "^4.4.1"
   },
   "devDependencies": {
