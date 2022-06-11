@@ -1,6 +1,7 @@
 import {
   AccountCircleSharp,
   AlternateEmailSharp,
+  LocationOnSharp,
   LockSharp,
   PhoneSharp,
   Visibility,
@@ -9,6 +10,7 @@ import {
   VisibilitySharp,
 } from "@mui/icons-material";
 import {
+  Avatar,
   Button,
   Card,
   Container,
@@ -20,6 +22,7 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
+import ImageUriDialog from "../../profileView/components/ImageUriDialog";
 import { registerController } from "../controllers/registerController";
 
 const RegisterPage = () => {
@@ -30,14 +33,20 @@ const RegisterPage = () => {
     setLastname,
     contactNo,
     setContactNo,
+    address,
+    setAddress,
     password,
     setPassword,
     email,
     setEmail,
+    profileUri,
+    setProfileUri,
     showPassword,
     setShowPassword,
     registerHandler,
     navigate,
+    openProfilePicker,
+    setOpenProfilePicker,
   } = registerController();
 
   return (
@@ -61,13 +70,17 @@ const RegisterPage = () => {
           alignItems="center"
           justifyContent="center"
         >
-          <Typography
-            variant="h6"
-            sx={{ marginBottom: "1.5rem" }}
-            align="center"
+          <IconButton
+            onClick={() => {
+              setOpenProfilePicker(true);
+            }}
           >
-            Register
-          </Typography>
+            <Avatar
+              alt="Profile Image"
+              src={profileUri}
+              sx={{ width: 100, height: 100 }}
+            />
+          </IconButton>
           <TextField
             id="firstname"
             label="First Name"
@@ -114,6 +127,23 @@ const RegisterPage = () => {
               startAdornment: (
                 <InputAdornment position="start">
                   <PhoneSharp />
+                </InputAdornment>
+              ),
+            }}
+            sx={{ backgroundColor: "#f1effb" }}
+          />
+          <TextField
+            id="address"
+            label="Address"
+            type="text"
+            variant="outlined"
+            onChange={(e) => setAddress(e.target.value)}
+            value={address}
+            fullWidth={true}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LocationOnSharp />
                 </InputAdornment>
               ),
             }}
@@ -179,6 +209,12 @@ const RegisterPage = () => {
           </Button>
         </Stack>
       </Card>
+      <ImageUriDialog
+        open={openProfilePicker}
+        handleClose={() => setOpenProfilePicker(false)}
+        saveHandler={setProfileUri}
+        imageUri={profileUri}
+      />
     </Container>
   );
 };

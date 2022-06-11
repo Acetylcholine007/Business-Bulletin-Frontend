@@ -38,6 +38,7 @@ const DashboardPage = () => {
     closeUserHandler,
     closeBusinessHandler,
     closeTagHandler,
+    saveTagHandler,
   } = dashboardController();
 
   return (
@@ -169,6 +170,17 @@ const DashboardPage = () => {
                   image: false,
                 },
                 {
+                  id: "isVerified",
+                  sortable: false,
+                  label: "Verified",
+                  align: "center",
+                  image: false,
+                  button: true,
+                  action: (val) => {
+                    console.log(!val);
+                  },
+                },
+                {
                   id: "status",
                   sortable: false,
                   label: "Status",
@@ -226,9 +238,7 @@ const DashboardPage = () => {
       <TagEditorDialog
         open={tagDialogOpen}
         handleClose={closeTagHandler}
-        saveHandler={(type, val) => {
-          console.log(type, val);
-        }}
+        saveHandler={saveTagHandler}
         selectedTag={selectedTag}
       />
       <BusinessViewerDialog

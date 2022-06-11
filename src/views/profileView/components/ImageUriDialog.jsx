@@ -19,7 +19,6 @@ export default function ImageUriDialog({
 
   useEffect(() => {
     setError(false);
-    setProfileUri("");
   }, [open]);
 
   return (
@@ -40,7 +39,7 @@ export default function ImageUriDialog({
           placeholder="Profile image URL"
           error={error}
           fullWidth
-          onChange={(e) => setTag(e.value.target)}
+          onChange={(e) => setProfileUri(e.target.value)}
           helperText={error ? "Cannot be empty" : null}
         />
       </DialogContent>

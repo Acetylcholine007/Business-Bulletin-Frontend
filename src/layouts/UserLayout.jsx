@@ -30,6 +30,7 @@ import {
 } from "@mui/icons-material";
 import UserRoutes, { userRoutes } from "../routes/UserRoutes";
 import { useLocation, useNavigate } from "react-router-dom";
+import { AuthContext } from "../shared/contexts/AuthContext";
 
 const drawerWidth = 240;
 
@@ -99,6 +100,7 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 const UserLayout = () => {
+  const { firstname, lastname, logout } = useContext(AuthContext);
   const { loadingParams } = useContext(LoadingContext);
   const { snackbarParams, snackbarDispatch } = useContext(SnackbarContext);
   const [open, setOpen] = useState(false);
@@ -147,7 +149,7 @@ const UserLayout = () => {
             startIcon={<AccountCircleOutlined />}
           >
             <Typography variant="body2" noWrap>
-              {"John Doe"}
+              {`${firstname} ${lastname}`}
             </Typography>
           </Button>
         </Toolbar>
@@ -207,7 +209,7 @@ const UserLayout = () => {
           <Divider />
           <ListItem disablePadding sx={{ display: "block" }}>
             <ListItemButton
-              onClick={() => {}}
+              onClick={logout}
               sx={{
                 minHeight: 48,
                 justifyContent: open ? "initial" : "center",

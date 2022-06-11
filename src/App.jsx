@@ -18,8 +18,19 @@ const theme = createTheme({
 });
 
 function App() {
-  const { token, login, logout, userId, accountType, firstname, lastname } =
-    useAuth();
+  const {
+    token,
+    login,
+    logout,
+    updateLocalUserData,
+    userId,
+    accountType,
+    contactNo,
+    address,
+    profileUri,
+    firstname,
+    lastname,
+  } = useAuth();
 
   return (
     <ThemeProvider theme={theme}>
@@ -28,19 +39,22 @@ function App() {
           <AuthContextProvider
             value={{
               isLoggedIn: !!token,
-              token: token,
-              userId: userId,
-              accountType: accountType,
-              firstname: firstname,
-              lastname: lastname,
-              login: login,
-              logout: logout,
+              token,
+              userId,
+              accountType,
+              firstname,
+              lastname,
+              contactNo,
+              address,
+              profileUri,
+              updateLocalUserData,
+              login,
+              logout,
             }}
           >
-            {/* {!!token && accountType == 1 && <UserLayout />}
+            {!!token && accountType == 1 && <UserLayout />}
             {!!token && accountType == 2 && <AdminLayout />}
-            {!token && <PublicLayout />} */}
-            <AdminLayout />
+            {!token && <PublicLayout />}
           </AuthContextProvider>
         </LoadingContextProvider>
       </SnackbarContextProvider>

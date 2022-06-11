@@ -8,8 +8,7 @@ const login = async (email, password, callback, errorCallback) => {
     "application/json"
   );
   if (response.status === 200) {
-    console.log(response);
-    callback(response.data);
+    callback(response.user);
   } else {
     errorCallback(response.data.message || "Failed to login");
   }
@@ -24,7 +23,6 @@ const signup = async (data, callback, errorCallback) => {
     "application/json"
   );
   if (response.status === 200) {
-    console.log(response);
     callback(true);
   } else {
     errorCallback(response.data.message || "Failed to signup");

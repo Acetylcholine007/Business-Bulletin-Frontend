@@ -53,7 +53,7 @@ export default function TagEditorDialog({
               setError(true);
             } else {
               setError(false);
-              saveHandler(false, tag);
+              saveHandler(selectedTag ? selectedTag._id : null, tag);
               handleClose();
             }
           }}

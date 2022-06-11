@@ -11,14 +11,23 @@ export const useAuth = () => {
   const [firstname, setFirstname] = useState(null);
   const [lastname, setLastname] = useState(null);
   const [contactNo, setContactNo] = useState(null);
-  const [defaultBuoy, setDefaultBuoy] = useState(null);
+  const [address, setAddress] = useState(null);
+  const [profileUri, setProfileUri] = useState(null);
   const [accountType, setAccountType] = useState(1);
   const navigate = useNavigate();
 
-  const updateLocalUserData = (newFirstName, newLastName, newContactNo) => {
+  const updateLocalUserData = (
+    newFirstName,
+    newLastName,
+    newContactNo,
+    newAddress,
+    newProfileUri
+  ) => {
     setFirstname(newFirstName);
     setLastname(newLastName);
     setContactNo(newContactNo);
+    setAddress(newAddress);
+    setProfileUri(newProfileUri);
     localStorage.setItem(
       LS_USER_DATA,
       JSON.stringify({
@@ -27,24 +36,26 @@ export const useAuth = () => {
         firstname: newFirstName,
         lastname: newLastName,
         contactNo: newContactNo,
-        defaultBuoy,
-        expiration: tokenExpirationDate.toISOString(),
+        address: newAddress,
+        profileUri: newProfileUri,
+        expirationDate: tokenExpirationDate.toISOString(),
         accountType,
       })
     );
   };
 
   const login = useCallback(
-    (
-      uid,
+    ({
+      userId,
       token,
       firstname,
       lastname,
       contactNo,
-      buoy,
-      accType,
-      expirationDate
-    ) => {
+      address,
+      profileUri,
+      accountType,
+      expirationDate,
+    }) => {
       let TOKEN_EXPIRATION = new Date(new Date().getTime() + 1000 * 60 * 60);
       const tokenExpirationDate = !!expirationDate
         ? expirationDate < new Date()
@@ -55,23 +66,25 @@ export const useAuth = () => {
       localStorage.setItem(
         LS_USER_DATA,
         JSON.stringify({
-          userId: uid,
+          userId,
           token,
           firstname,
           lastname,
           contactNo,
-          defaultBuoy: buoy,
-          expiration: tokenExpirationDate.toISOString(),
-          accountType: accType,
+          address,
+          profileUri,
+          expirationDate: tokenExpirationDate.toISOString(),
+          accountType,
         })
       );
-      setUserId(uid);
+      setUserId(userId);
       setLastname(lastname);
       setFirstname(firstname);
       setContactNo(contactNo);
-      setDefaultBuoy(buoy);
+      setAddress(address);
+      setProfileUri(profileUri);
       setToken(token);
-      setAccountType(accType);
+      setAccountType(accountType);
       navigate("/");
     },
     []
@@ -84,7 +97,8 @@ export const useAuth = () => {
     setFirstname(null);
     setLastname(null);
     setContactNo(null);
-    setDefaultBuoy(null);
+    setAddress(null);
+    setProfileUri(null);
     localStorage.removeItem(LS_USER_DATA);
     navigate("/");
   }, []);
@@ -93,8 +107,6 @@ export const useAuth = () => {
     if (token && tokenExpirationDate) {
       const remainingTime =
         tokenExpirationDate.getTime() - new Date().getTime();
-      console.log(tokenExpirationDate.getTime());
-      console.log(new Date().getTime());
       logoutTimer = setTimeout(logout, remainingTime);
     } else {
       clearTimeout(logoutTimer);
@@ -106,18 +118,19 @@ export const useAuth = () => {
     if (
       storedData &&
       storedData.token &&
-      new Date(storedData.expiration) > new Date()
+      new Date(storedData.expirationDate) > new Date()
     ) {
-      login(
-        storedData.userId,
-        storedData.token,
-        storedData.firstname,
-        storedData.lastname,
-        storedData.contactNo,
-        storedData.defaultBuoy,
-        storedData.accountType,
-        new Date(storedData.expiration)
-      );
+      login({
+        userId: storedData.userId,
+        token: storedData.token,
+        firstname: storedData.firstname,
+        lastname: storedData.lastname,
+        contactNo: storedData.contactNo,
+        address: storedData.address,
+        profileUri: storedData.profileUri,
+        accountType: storedData.accountType,
+        expirationDate: new Date(storedData.expirationDate),
+      });
     }
   }, [login]);
 
@@ -127,7 +140,8 @@ export const useAuth = () => {
     logout,
     userId,
     contactNo,
-    defaultBuoy,
+    address,
+    profileUri,
     lastname,
     firstname,
     accountType,

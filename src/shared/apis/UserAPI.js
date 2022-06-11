@@ -12,14 +12,14 @@ const getUsers = async (
     `/users?query=${query}&page=${page}&queryTarget=${queryTarget}`
   );
   if (response.status === 200) {
-    snackbarDispatch({
-      type: "SET_PARAMS",
-      payload: {
-        message: "Users Fetched",
-        isOpen: true,
-        severity: "success",
-      },
-    });
+    // snackbarDispatch({
+    //   type: "SET_PARAMS",
+    //   payload: {
+    //     message: "Users Fetched",
+    //     isOpen: true,
+    //     severity: "success",
+    //   },
+    // });
     callback(response);
   } else {
     snackbarDispatch({
@@ -37,14 +37,14 @@ const getUsers = async (
 const getUser = async (userId, loadingDispatch, snackbarDispatch, callback) => {
   let response = await requestAxios(`/users/${userId}`);
   if (response.status === 200) {
-    snackbarDispatch({
-      type: "SET_PARAMS",
-      payload: {
-        message: "User Fetched",
-        isOpen: true,
-        severity: "success",
-      },
-    });
+    // snackbarDispatch({
+    //   type: "SET_PARAMS",
+    //   payload: {
+    //     message: "User Fetched",
+    //     isOpen: true,
+    //     severity: "success",
+    //   },
+    // });
     callback(response);
   } else {
     snackbarDispatch({

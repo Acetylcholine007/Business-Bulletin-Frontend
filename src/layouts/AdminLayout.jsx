@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar from "@mui/material/AppBar";
+import { AuthContext } from "../shared/contexts/AuthContext";
 import { SnackbarContext } from "../shared/contexts/SnackbarContext";
 import { LoadingContext } from "../shared/contexts/LoadingContext";
 import { styled, useTheme, alpha } from "@mui/material/styles";
@@ -99,6 +100,7 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 const AdminLayout = () => {
+  const { firstname, lastname, logout } = useContext(AuthContext);
   const { loadingParams } = useContext(LoadingContext);
   const { snackbarParams, snackbarDispatch } = useContext(SnackbarContext);
   const [open, setOpen] = useState(false);
@@ -147,7 +149,7 @@ const AdminLayout = () => {
             startIcon={<AccountCircleOutlined />}
           >
             <Typography variant="body2" noWrap>
-              {"John Doe"}
+              {`${firstname} ${lastname}`}
             </Typography>
           </Button>
         </Toolbar>
@@ -207,7 +209,7 @@ const AdminLayout = () => {
           <Divider />
           <ListItem disablePadding sx={{ display: "block" }}>
             <ListItemButton
-              onClick={() => {}}
+              onClick={logout}
               sx={{
                 minHeight: 48,
                 justifyContent: open ? "initial" : "center",

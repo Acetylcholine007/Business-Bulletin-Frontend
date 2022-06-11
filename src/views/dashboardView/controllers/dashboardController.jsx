@@ -60,6 +60,22 @@ export const dashboardController = () => {
     );
   }, [userPage, userQuery, userQueryTarget]);
 
+  const saveTagHandler = (tagId, name) => {
+    if (tagId) {
+      TagAPI.editTag(
+        { name },
+        loadingDispatch,
+        snackbarDispatch,
+        () => {},
+        tagId
+      );
+    } else {
+      TagAPI.createTag({ name }, loadingDispatch, snackbarDispatch, (tag) => {
+        setTags([...tags, tag]);
+      });
+    }
+  };
+
   const selectUserHandler = (user) => {
     setSelectedUser(user);
     setUserDialogOpen(true);
@@ -121,5 +137,6 @@ export const dashboardController = () => {
     closeUserHandler,
     closeBusinessHandler,
     closeTagHandler,
+    saveTagHandler
   };
 };

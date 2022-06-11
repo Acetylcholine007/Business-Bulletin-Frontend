@@ -53,7 +53,7 @@ const getTag = async (tagId, loadingDispatch, snackbarDispatch, callback) => {
 const createTag = async (data, loadingDispatch, snackbarDispatch, callback) => {
   loadingDispatch({ type: "SET_PARAMS", payload: { isOpen: true } });
   let response = await requestAxios(
-    `/tags/${data}`,
+    `/tags`,
     data,
     "POST",
     "application/json"
@@ -67,7 +67,7 @@ const createTag = async (data, loadingDispatch, snackbarDispatch, callback) => {
         severity: "success",
       },
     });
-    callback();
+    callback(response.tag);
   } else {
     snackbarDispatch({
       type: "SET_PARAMS",

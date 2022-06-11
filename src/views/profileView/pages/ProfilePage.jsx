@@ -36,6 +36,7 @@ const ProfilePage = () => {
     editMode,
     setEditMode,
     user,
+    setUser,
     openEditPassword,
     setOpenEditPassword,
     openEditProfile,
@@ -85,7 +86,7 @@ const ProfilePage = () => {
             {!editMode && (
               <>
                 <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Ambersweet_oranges.jpg/1200px-Ambersweet_oranges.jpg"
+                  src={user.profileUri}
                   alt="Profile Photo"
                   style={{
                     height: "12rem",
@@ -94,9 +95,9 @@ const ProfilePage = () => {
                     borderRadius: "50%",
                   }}
                 />
-                <Typography variant="h6">{"John Doe"}</Typography>
-                <Typography variant="h6">{"Manila, Philippines"}</Typography>
-                <Typography variant="h6">{"0921 259 3427"}</Typography>
+                <Typography variant="h6">{`${user.firstname} ${user.lastname}`}</Typography>
+                <Typography variant="h6">{`${user.address}`}</Typography>
+                <Typography variant="h6">{`${user.contactNo}`}</Typography>
               </>
             )}
             {editMode && (
@@ -108,7 +109,7 @@ const ProfilePage = () => {
                   }}
                 >
                   <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Ambersweet_oranges.jpg/1200px-Ambersweet_oranges.jpg"
+                    src={user.profileUri}
                     alt="Profile Photo"
                     style={{
                       height: "12rem",
@@ -123,8 +124,13 @@ const ProfilePage = () => {
                   label="First Name"
                   type="text"
                   variant="filled"
-                  onChange={(e) => setFirstname(e.target.value)}
-                  value={"John"}
+                  onChange={(e) =>
+                    setUser((user) => {
+                      user.firstname = e.target.value;
+                      return user;
+                    })
+                  }
+                  value={user.firstname}
                   fullWidth={true}
                   siz="small"
                   sx={{ backgroundColor: "#f1effb" }}
@@ -132,11 +138,16 @@ const ProfilePage = () => {
                 />
                 <TextField
                   disable={true}
-                  label="First Name"
+                  label="Last Name"
                   type="text"
                   variant="filled"
-                  onChange={(e) => setFirstname(e.target.value)}
-                  value={"Doe"}
+                  onChange={(e) =>
+                    setUser((user) => {
+                      user.lastname = e.target.value;
+                      return user;
+                    })
+                  }
+                  value={user.lastname}
                   fullWidth={true}
                   siz="small"
                   sx={{ backgroundColor: "#f1effb" }}
@@ -144,11 +155,16 @@ const ProfilePage = () => {
                 />
                 <TextField
                   disable={true}
-                  label="First Name"
+                  label="Address"
                   type="text"
                   variant="filled"
-                  onChange={(e) => setFirstname(e.target.value)}
-                  value={"Manila, Philippines"}
+                  onChange={(e) =>
+                    setUser((user) => {
+                      user.address = e.target.value;
+                      return user;
+                    })
+                  }
+                  value={user.address}
                   fullWidth={true}
                   siz="small"
                   sx={{ backgroundColor: "#f1effb" }}
@@ -159,8 +175,13 @@ const ProfilePage = () => {
                   label="Contact No."
                   type="text"
                   variant="filled"
-                  onChange={(e) => setFirstname(e.target.value)}
-                  value={"0921 259 3427"}
+                  onChange={(e) =>
+                    setUser((user) => {
+                      user.contactNo = e.target.value;
+                      return user;
+                    })
+                  }
+                  value={user.contactNo}
                   fullWidth={true}
                   siz="small"
                   sx={{ backgroundColor: "#f1effb" }}
@@ -174,7 +195,10 @@ const ProfilePage = () => {
               alignItems="center"
               justifyContent="space-evenly"
             >
-              <Button variant="contained" onClick={() => setOpenEditPassword(true)}>
+              <Button
+                variant="contained"
+                onClick={() => setOpenEditPassword(true)}
+              >
                 Change Password
               </Button>
               <Button
@@ -206,40 +230,37 @@ const ProfilePage = () => {
               paddingRight: 1,
             }}
           >
-            {[1, 2, 3, 4, 5, 6].map((business, index) => (
-              <Card sx={{ marginBottom: 2 }} key={index} elevation={4}>
-                <ListItemButton
-                  sx={{
-                    display: "block",
-                    "&.Mui-selected": {
-                      border: "1px solid",
-                      borderColor: "primary.main",
-                      borderRadius: 1,
-                    },
-                  }}
-                  // selected={selectedIndex === index}
-                  onClick={() => navigate(`/profile/businesses/${index}/edit`)}
-                >
-                  <Typography variant="h5">{`Business ${business}`}</Typography>
-                  <Typography variant="h6">Business Tagline</Typography>
-                  <Divider />
-                  <Typography variant="p">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Suscipit obcaecati sit ullam odit consequuntur quia ex fuga
-                    accusamus, iure nemo repellendus maiores voluptatem!
-                    Molestiae aperiam nemo aliquam, vero expedita facilis!
-                  </Typography>
-                  <CardActions
-                    disableSpacing
-                    sx={{ justifyContent: "flex-end" }}
+            {businesses &&
+              businesses.map((business, index) => (
+                <Card sx={{ marginBottom: 2 }} key={index} elevation={4}>
+                  <ListItemButton
+                    sx={{
+                      display: "block",
+                      "&.Mui-selected": {
+                        border: "1px solid",
+                        borderColor: "primary.main",
+                        borderRadius: 1,
+                      },
+                    }}
+                    // selected={selectedIndex === index}
+                    onClick={() =>
+                      navigate(`/profile/businesses/${business._id}/edit`)
+                    }
                   >
-                    <Button size="small" onClick={() => {}}>
-                      Delete
-                    </Button>
-                  </CardActions>
-                </ListItemButton>
-              </Card>
-            ))}
+                    <Typography variant="h5">{business.name}</Typography>
+                    <Divider />
+                    <Typography variant="p">{business.description}</Typography>
+                    <CardActions
+                      disableSpacing
+                      sx={{ justifyContent: "flex-end" }}
+                    >
+                      <Button size="small" onClick={() => {}}>
+                        Delete
+                      </Button>
+                    </CardActions>
+                  </ListItemButton>
+                </Card>
+              ))}
           </List>
         </Grid>
       </Grid>

@@ -12,14 +12,6 @@ const getBusinesses = async (
     `/businesses?query=${query}&page=${page}&queryTarget=${queryTarget}`
   );
   if (response.status === 200) {
-    // snackbarDispatch({
-    //   type: "SET_PARAMS",
-    //   payload: {
-    //     message: "Businesses Fetched",
-    //     isOpen: true,
-    //     severity: "success",
-    //   },
-    // });
     callback(response);
   } else {
     snackbarDispatch({
@@ -44,18 +36,9 @@ const getUserBusinesses = async (
   userId
 ) => {
   let response = await requestAxios(
-    `/businesses/user/:${userId}d?query=${query}&page=${page}&queryTarget=${queryTarget}`
+    `/businesses/user/${userId}?query=${query}&page=${page}&queryTarget=${queryTarget}`
   );
-  console.log(response);
   if (response.status === 200) {
-    // snackbarDispatch({
-    //   type: "SET_PARAMS",
-    //   payload: {
-    //     message: "Businesses Fetched",
-    //     isOpen: true,
-    //     severity: "success",
-    //   },
-    // });
     callback(response);
   } else {
     snackbarDispatch({

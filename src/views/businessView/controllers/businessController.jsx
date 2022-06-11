@@ -42,7 +42,6 @@ export const businessController = () => {
           loadingDispatch,
           snackbarDispatch,
           (data) => {
-            console.log(data.businesses)
             setBusinesses(data.businesses);
             setTotalItems(data.totalItems);
           }

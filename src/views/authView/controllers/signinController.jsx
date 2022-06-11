@@ -6,7 +6,7 @@ import { LoadingContext } from "../../../shared/contexts/LoadingContext";
 import { SnackbarContext } from "../../../shared/contexts/SnackbarContext";
 
 export const signinController = () => {
-  const auth = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const { snackbarDispatch } = useContext(SnackbarContext);
   const { loadingDispatch } = useContext(LoadingContext);
   const [password, setPassword] = useState("");
@@ -15,31 +15,25 @@ export const signinController = () => {
   const [showResendVerification, setShowResendVerification] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
+  const { state } = useLocation();
 
   const signinHandler = async (event) => {
     loadingDispatch({ type: "SET_PARAMS", payload: { isOpen: true } });
     event.preventDefault();
-    const response = await AuthAPI.login(
-      email,
-      password,
-      auth.login,
-      (message) => {
-        snackbarDispatch({
-          type: "SET_PARAMS",
-          payload: {
-            message: message,
-            isOpen: true,
-            severity: "error",
-          },
-        });
-      }
-    );
+    const response = await AuthAPI.login(email, password, login, (message) => {
+      snackbarDispatch({
+        type: "SET_PARAMS",
+        payload: {
+          message: message,
+          isOpen: true,
+          severity: "error",
+        },
+      });
+    });
     if (response.status === 403) {
       setShowResendVerification(true);
     }
     loadingDispatch({ type: "SET_PARAMS", payload: { isOpen: false } });
-    navigate("/");
   };
 
   const verificationHandler = async () => {
@@ -112,7 +106,7 @@ export const signinController = () => {
   };
 
   useEffect(() => {
-    if (location.state?.toVerify) {
+    if (state?.toVerify) {
       snackbarDispatch({
         type: "SET_PARAMS",
         payload: {
