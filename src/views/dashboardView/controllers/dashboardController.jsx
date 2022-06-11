@@ -6,9 +6,9 @@ import { LoadingContext } from "../../../shared/contexts/LoadingContext";
 import { SnackbarContext } from "../../../shared/contexts/SnackbarContext";
 
 export const dashboardController = () => {
-  const [businesses, setBusinesses] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [tags, setTags] = useState([]);
+  const [businesses, setBusinesses] = useState(null);
+  const [users, setUsers] = useState(null);
+  const [tags, setTags] = useState(null);
   const [businessPage, setBusinessPage] = useState(1);
   const [userPage, setUserPage] = useState(1);
   const [businessTotalItems, setBusinessTotalItems] = useState(0);
@@ -17,6 +17,12 @@ export const dashboardController = () => {
   const [userQuery, setUserQuery] = useState("");
   const [businessQueryTarget, setBusinessQueryTarget] = useState("Name");
   const [userQueryTarget, setUserQueryTarget] = useState("Name");
+  const [businessDialogOpen, setBusinessDialogOpen] = useState(false);
+  const [userDialogOpen, setUserDialogOpen] = useState(false);
+  const [tagDialogOpen, setTagDialogOpen] = useState(false);
+  const [selectedBusiness, setSelectedBusiness] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedTag, setSelectedTag] = useState(null);
   const { loadingDispatch } = useContext(LoadingContext);
   const { snackbarDispatch } = useContext(SnackbarContext);
 
@@ -54,6 +60,36 @@ export const dashboardController = () => {
     );
   }, [userPage, userQuery, userQueryTarget]);
 
+  const selectUserHandler = (user) => {
+    setSelectedUser(user);
+    setUserDialogOpen(true);
+  };
+
+  const closeUserHandler = () => {
+    setUserDialogOpen(false);
+    setSelectedUser(null);
+  };
+
+  const selectBusinessHandler = (business) => {
+    setSelectedBusiness(business);
+    setBusinessDialogOpen(true);
+  };
+
+  const closeBusinessHandler = () => {
+    setBusinessDialogOpen(false);
+    setSelectedBusiness(null);
+  };
+
+  const selectTagHandler = (tag) => {
+    setSelectedTag(tag);
+    setTagDialogOpen(true);
+  };
+
+  const closeTagHandler = () => {
+    setTagDialogOpen(false);
+    setSelectedTag(null);
+  };
+
   return {
     businesses,
     users,
@@ -72,5 +108,18 @@ export const dashboardController = () => {
     setBusinessQueryTarget,
     userQueryTarget,
     setUserQueryTarget,
+    businessDialogOpen,
+    userDialogOpen,
+    tagDialogOpen,
+    setTagDialogOpen,
+    selectedBusiness,
+    selectBusinessHandler,
+    selectedUser,
+    selectUserHandler,
+    selectedTag,
+    selectTagHandler,
+    closeUserHandler,
+    closeBusinessHandler,
+    closeTagHandler,
   };
 };

@@ -12,19 +12,19 @@ export const profileController = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [editMode, setEditMode] = useState(false);
   const [user, setUser] = useState({});
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const menuHandler = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const [openEditPassword, setOpenEditPassword] = useState(false);
+  const [openEditProfile, setOpenEditProfile] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { userId } = useContext(AuthContext);
   const { snackbarDispatch } = useContext(SnackbarContext);
   const { loadingDispatch } = useContext(LoadingContext);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    UserAPI.getUser(userId, loadingDispatch, snackbarDispatch, (data) => {
+      setUser(data.user);
+    });
+  }, []);
 
   useEffect(() => {
     BusinessAPI.getUserBusinesses(
@@ -41,20 +41,30 @@ export const profileController = () => {
     );
   }, []);
 
+  const changePasswordHandler = async (newPassword) => {
+    console.log(newPassword);
+  };
+
+  const changeProfileHandler = async (newProfileUri) => {
+    console.log(newProfileUri);
+  };
+
   return {
     businesses,
     page,
+    setPage,
     totalItems,
     editMode,
     setEditMode,
-    anchorEl,
-    setAnchorEl,
-    open,
-    menuHandler,
-    handleClose,
+    user,
+    openEditPassword,
+    setOpenEditPassword,
+    openEditProfile,
+    setOpenEditProfile,
     selectedIndex,
     setSelectedIndex,
-    user,
     navigate,
+    changePasswordHandler,
+    changeProfileHandler,
   };
 };

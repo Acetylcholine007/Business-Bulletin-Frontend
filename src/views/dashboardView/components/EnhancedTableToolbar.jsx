@@ -1,14 +1,18 @@
-import * as React from "react";
 import PropTypes from "prop-types";
 import { alpha } from "@mui/material/styles";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
-import DeleteIcon from "@mui/icons-material/Delete";
-import FilterListIcon from "@mui/icons-material/FilterList";
+import { AddSharp, SearchSharp } from "@mui/icons-material";
+import {
+  InputAdornment,
+  TextField,
+  Tooltip,
+  IconButton,
+  Typography,
+  Toolbar,
+  Stack,
+  MenuItem,
+} from "@mui/material";
 
-const EnhancedTableToolbar = ({ numSelected, tableTitle }) => {
+const EnhancedTableToolbar = ({ numSelected, tableTitle, callback }) => {
   return (
     <Toolbar
       sx={{
@@ -23,45 +27,55 @@ const EnhancedTableToolbar = ({ numSelected, tableTitle }) => {
         }),
       }}
     >
-      {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          {tableTitle}
-        </Typography>
-      )}
+      <Typography
+        sx={{ flex: "1" }}
+        variant="h6"
+        id="tableTitle"
+        component="div"
+      >
+        {tableTitle}
+      </Typography>
 
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon />
+      {tableTitle === "Tags" ? (
+        <Tooltip title="Add Tag">
+          <IconButton onClick={callback}>
+            <AddSharp />
           </IconButton>
         </Tooltip>
       ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
+        <Stack direction="row" spacing={1}>
+          <TextField
+            size="small"
+            select
+            value={"Business"}
+            onChange={(e) => {}}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">Look for: </InputAdornment>
+              ),
+            }}
+          >
+            {["Business", "Product", "Service"].map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            size="small"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchSharp />
+                </InputAdornment>
+              ),
+            }}
+            placeholder="Query"
+          />
+        </Stack>
       )}
     </Toolbar>
   );
-};
-
-EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
 };
 
 export default EnhancedTableToolbar;

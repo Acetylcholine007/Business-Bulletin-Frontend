@@ -17,6 +17,9 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
+import LocationPickerDialog from "../components/LocationPickerDialog";
+import ProductEditorDialog from "../components/ProductEditorDialog";
+import ServiceEditorDialog from "../components/ServiceEditorDialog";
 import { businessEditorController } from "../controllers/businessEditorController";
 
 const BusinessEditor = () => {
@@ -35,7 +38,19 @@ const BusinessEditor = () => {
     setLng,
     tags,
     setTags,
-    saveHandler,
+    selectedProduct,
+    setSelectedProduct,
+    selectedService,
+    setSelectedService,
+    openProductDialog,
+    setOpenProductDialog,
+    openServiceDialog,
+    setOpenServiceDialog,
+    openLocationPicker,
+    setOpenLocationPicker,
+    businessSaveHandler,
+    productSavehandler,
+    serviceSaveHandler,
     navigate,
   } = businessEditorController();
 
@@ -135,7 +150,7 @@ const BusinessEditor = () => {
                   <TextField {...params} label="Tags" placeholder="Tags" />
                 )}
               />
-              <Button variant="contained" onClick={saveHandler}>
+              <Button variant="contained" onClick={businessSaveHandler}>
                 Save
               </Button>
             </Stack>
@@ -238,6 +253,21 @@ const BusinessEditor = () => {
           </Stack>
         </Grid>
       </Grid>
+      <ServiceEditorDialog
+        open={openProductDialog}
+        handleClose={() => setOpenServiceDialog(false)}
+        saveHandler={productSavehandler}
+      />
+      <ProductEditorDialog
+        open={openServiceDialog}
+        handleClose={() => setOpenProductDialog(false)}
+        saveHandler={productSavehandler}
+      />
+      <LocationPickerDialog
+        open={openLocationPicker}
+        handleClose={() => setOpenLocationPicker(false)}
+        saveHandler={() => {}}
+      />
     </Container>
   );
 };

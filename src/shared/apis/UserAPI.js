@@ -20,7 +20,7 @@ const getUsers = async (
         severity: "success",
       },
     });
-    callback(response.data);
+    callback(response);
   } else {
     snackbarDispatch({
       type: "SET_PARAMS",
@@ -45,7 +45,7 @@ const getUser = async (userId, loadingDispatch, snackbarDispatch, callback) => {
         severity: "success",
       },
     });
-    callback(response.data);
+    callback(response);
   } else {
     snackbarDispatch({
       type: "SET_PARAMS",

@@ -23,11 +23,29 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
+import ImageUriDialog from "../components/ImageUriDialog";
+import PasswordEditorDialog from "../components/PasswordEditorDialog";
 import { profileController } from "../controllers/profileController";
 
 const ProfilePage = () => {
-  const { selectedIndex, setSelectedIndex, editMode, setEditMode } =
-    profileController();
+  const {
+    businesses,
+    page,
+    setPage,
+    totalItems,
+    editMode,
+    setEditMode,
+    user,
+    openEditPassword,
+    setOpenEditPassword,
+    openEditProfile,
+    setOpenEditProfile,
+    selectedIndex,
+    setSelectedIndex,
+    navigate,
+    changePasswordHandler,
+    changeProfileHandler,
+  } = profileController();
 
   return (
     <Container
@@ -84,7 +102,7 @@ const ProfilePage = () => {
             {editMode && (
               <>
                 <ButtonBase
-                  onClick={() => {}}
+                  onClick={() => setOpenEditProfile(true)}
                   sx={{
                     borderRadius: "50%",
                   }}
@@ -156,10 +174,13 @@ const ProfilePage = () => {
               alignItems="center"
               justifyContent="space-evenly"
             >
-              <Button variant="contained" onClick={() => {}}>
+              <Button variant="contained" onClick={() => setOpenEditPassword(true)}>
                 Change Password
               </Button>
-              <Button variant="contained" onClick={() => {}}>
+              <Button
+                variant="contained"
+                onClick={() => navigate("/profile/businesses/new")}
+              >
                 Create New Business
               </Button>
             </Stack>
@@ -196,8 +217,8 @@ const ProfilePage = () => {
                       borderRadius: 1,
                     },
                   }}
-                  selected={selectedIndex === index}
-                  onClick={() => setSelectedIndex(index)}
+                  // selected={selectedIndex === index}
+                  onClick={() => navigate(`/profile/businesses/${index}/edit`)}
                 >
                   <Typography variant="h5">{`Business ${business}`}</Typography>
                   <Typography variant="h6">Business Tagline</Typography>
@@ -213,9 +234,6 @@ const ProfilePage = () => {
                     sx={{ justifyContent: "flex-end" }}
                   >
                     <Button size="small" onClick={() => {}}>
-                      Edit
-                    </Button>
-                    <Button size="small" onClick={() => {}}>
                       Delete
                     </Button>
                   </CardActions>
@@ -225,6 +243,17 @@ const ProfilePage = () => {
           </List>
         </Grid>
       </Grid>
+      <PasswordEditorDialog
+        open={openEditPassword}
+        handleClose={() => setOpenEditPassword(false)}
+        saveHandler={changePasswordHandler}
+      />
+      <ImageUriDialog
+        open={openEditProfile}
+        handleClose={() => setOpenEditProfile(false)}
+        saveHandler={changeProfileHandler}
+        imageUri={user.profileUri}
+      />
     </Container>
   );
 };
