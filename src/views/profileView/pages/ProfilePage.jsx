@@ -22,7 +22,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import ImageUriDialog from "../components/ImageUriDialog";
 import PasswordEditorDialog from "../components/PasswordEditorDialog";
 import { profileController } from "../controllers/profileController";
@@ -35,8 +35,20 @@ const ProfilePage = () => {
     totalItems,
     editMode,
     setEditMode,
-    user,
-    setUser,
+    firstname,
+    lastname,
+    contactNo,
+    address,
+    profileUri,
+    newFirstname,
+    newLastname,
+    newAddress,
+    newContactNo,
+    newProfileUri,
+    setNewFirstname,
+    setNewLastname,
+    setNewContactNo,
+    setNewAddress,
     openEditPassword,
     setOpenEditPassword,
     openEditProfile,
@@ -46,6 +58,7 @@ const ProfilePage = () => {
     navigate,
     changePasswordHandler,
     changeProfileHandler,
+    editProfileHandler,
   } = profileController();
 
   return (
@@ -72,7 +85,12 @@ const ProfilePage = () => {
                     <IconButton onClick={() => setEditMode(false)}>
                       <CancelSharp />
                     </IconButton>
-                    <IconButton onClick={() => setEditMode(false)}>
+                    <IconButton
+                      onClick={() => {
+                        setEditMode(false);
+                        editProfileHandler();
+                      }}
+                    >
                       <SaveSharp />
                     </IconButton>
                   </>
@@ -86,7 +104,7 @@ const ProfilePage = () => {
             {!editMode && (
               <>
                 <img
-                  src={user.profileUri}
+                  src={profileUri}
                   alt="Profile Photo"
                   style={{
                     height: "12rem",
@@ -95,9 +113,9 @@ const ProfilePage = () => {
                     borderRadius: "50%",
                   }}
                 />
-                <Typography variant="h6">{`${user.firstname} ${user.lastname}`}</Typography>
-                <Typography variant="h6">{`${user.address}`}</Typography>
-                <Typography variant="h6">{`${user.contactNo}`}</Typography>
+                <Typography variant="h6">{`${firstname} ${lastname}`}</Typography>
+                <Typography variant="h6">{`${address}`}</Typography>
+                <Typography variant="h6">{`${contactNo}`}</Typography>
               </>
             )}
             {editMode && (
@@ -109,7 +127,7 @@ const ProfilePage = () => {
                   }}
                 >
                   <img
-                    src={user.profileUri}
+                    src={newProfileUri}
                     alt="Profile Photo"
                     style={{
                       height: "12rem",
@@ -124,13 +142,8 @@ const ProfilePage = () => {
                   label="First Name"
                   type="text"
                   variant="filled"
-                  onChange={(e) =>
-                    setUser((user) => {
-                      user.firstname = e.target.value;
-                      return user;
-                    })
-                  }
-                  value={user.firstname}
+                  onChange={(e) => setNewFirstname(e.target.value)}
+                  value={newFirstname}
                   fullWidth={true}
                   siz="small"
                   sx={{ backgroundColor: "#f1effb" }}
@@ -141,13 +154,8 @@ const ProfilePage = () => {
                   label="Last Name"
                   type="text"
                   variant="filled"
-                  onChange={(e) =>
-                    setUser((user) => {
-                      user.lastname = e.target.value;
-                      return user;
-                    })
-                  }
-                  value={user.lastname}
+                  onChange={(e) => setNewLastname(e.target.value)}
+                  value={newLastname}
                   fullWidth={true}
                   siz="small"
                   sx={{ backgroundColor: "#f1effb" }}
@@ -158,13 +166,8 @@ const ProfilePage = () => {
                   label="Address"
                   type="text"
                   variant="filled"
-                  onChange={(e) =>
-                    setUser((user) => {
-                      user.address = e.target.value;
-                      return user;
-                    })
-                  }
-                  value={user.address}
+                  onChange={(e) => setNewAddress(e.target.value)}
+                  value={newAddress}
                   fullWidth={true}
                   siz="small"
                   sx={{ backgroundColor: "#f1effb" }}
@@ -175,13 +178,8 @@ const ProfilePage = () => {
                   label="Contact No."
                   type="text"
                   variant="filled"
-                  onChange={(e) =>
-                    setUser((user) => {
-                      user.contactNo = e.target.value;
-                      return user;
-                    })
-                  }
-                  value={user.contactNo}
+                  onChange={(e) => setNewContactNo(e.target.value)}
+                  value={newContactNo}
                   fullWidth={true}
                   siz="small"
                   sx={{ backgroundColor: "#f1effb" }}
@@ -273,7 +271,7 @@ const ProfilePage = () => {
         open={openEditProfile}
         handleClose={() => setOpenEditProfile(false)}
         saveHandler={changeProfileHandler}
-        imageUri={user.profileUri}
+        imageUri={newProfileUri}
       />
     </Container>
   );

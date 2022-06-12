@@ -48,7 +48,7 @@ export default function PasswordEditorDialog({
           error={newPasswordError}
           fullWidth
           onChange={(e) => setNewPassword(e.target.value)}
-          helperText={newPasswordError ? "Cannot be empty" : null}
+          helperText={newPasswordError ? "Double check the field value" : null}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -70,7 +70,9 @@ export default function PasswordEditorDialog({
           error={confirmPasswordError}
           fullWidth
           onChange={(e) => setConfirmPassword(e.target.value)}
-          helperText={confirmPasswordError ? "Cannot be empty" : null}
+          helperText={
+            confirmPasswordError ? "Double check the field value" : null
+          }
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -87,7 +89,11 @@ export default function PasswordEditorDialog({
       <DialogActions>
         <Button
           onClick={() => {
-            if (newPassword === "" || confirmPassword === "") {
+            if (
+              newPassword === "" ||
+              confirmPassword === "" ||
+              newPassword !== confirmPassword
+            ) {
               setConfirmPasswordError(true);
               setNewPasswordError(true);
             } else {

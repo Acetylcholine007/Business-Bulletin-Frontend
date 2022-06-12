@@ -7,19 +7,21 @@ import { LoadingContext } from "../../../shared/contexts/LoadingContext";
 import { SnackbarContext } from "../../../shared/contexts/SnackbarContext";
 
 export const profileController = () => {
-  const { userId, firstname, lastname, contactNo, address, profileUri } =
-    useContext(AuthContext);
+  const auth = useContext(AuthContext);
   const [businesses, setBusinesses] = useState();
   const [page, setPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const [editMode, setEditMode] = useState(false);
-  const [user, setUser] = useState({
-    firstname,
-    lastname,
-    contactNo,
-    address,
-    profileUri,
-  });
+  const [firstname, setFirstname] = useState(auth.firstname);
+  const [lastname, setLastname] = useState(auth.lastname);
+  const [contactNo, setContactNo] = useState(auth.contactNo);
+  const [address, setAddress] = useState(auth.address);
+  const [profileUri, setProfileUri] = useState(auth.profileUri);
+  const [newFirstname, setNewFirstname] = useState(auth.firstname);
+  const [newLastname, setNewLastname] = useState(auth.lastname);
+  const [newContactNo, setNewContactNo] = useState(auth.contactNo);
+  const [newAddress, setNewAddress] = useState(auth.address);
+  const [newProfileUri, setNewProfileUri] = useState(auth.profileUri);
   const [openEditPassword, setOpenEditPassword] = useState(false);
   const [openEditProfile, setOpenEditProfile] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -28,9 +30,23 @@ export const profileController = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    UserAPI.getUser(userId, loadingDispatch, snackbarDispatch, (data) => {
-      setUser(data.user);
-    });
+    UserAPI.getUser(
+      auth.userId,
+      loadingDispatch,
+      snackbarDispatch,
+      ({ user }) => {
+        setFirstname(user.firstname);
+        setLastname(user.lastname);
+        setContactNo(user.contactNo);
+        setAddress(user.address);
+        setProfileUri(user.profileUri);
+        setNewFirstname(user.firstname);
+        setNewLastname(user.lastname);
+        setNewContactNo(user.contactNo);
+        setNewAddress(user.address);
+        setNewProfileUri(user.profileUri);
+      }
+    );
   }, []);
 
   useEffect(() => {
@@ -44,16 +60,50 @@ export const profileController = () => {
         setBusinesses(data.businesses);
         setTotalItems(data.totalItems);
       },
-      userId
+      auth.userId
     );
   }, []);
 
-  const changePasswordHandler = async (newPassword) => {
-    console.log(newPassword);
+  const changePasswordHandler = async (password) => {
+    UserAPI.changePassword(
+      password,
+      loadingDispatch,
+      snackbarDispatch,
+      auth.userId
+    );
   };
 
   const changeProfileHandler = async (newProfileUri) => {
-    console.log(newProfileUri);
+    setNewProfileUri(newProfileUri);
+  };
+
+  const editProfileHandler = async () => {
+    UserAPI.editUser(
+      {
+        firstname: newFirstname,
+        lastname: newLastname,
+        contactNo: newContactNo,
+        address: newAddress,
+        profileUri: newProfileUri,
+      },
+      loadingDispatch,
+      snackbarDispatch,
+      () => {
+        setFirstname(newFirstname);
+        setLastname(newLastname);
+        setContactNo(newContactNo);
+        setAddress(newAddress);
+        setProfileUri(newProfileUri);
+        auth.updateLocalUserData(
+          newFirstname,
+          newLastname,
+          newContactNo,
+          newAddress,
+          newProfileUri
+        );
+      },
+      auth.userId
+    );
   };
 
   return {
@@ -63,8 +113,20 @@ export const profileController = () => {
     totalItems,
     editMode,
     setEditMode,
-    user,
-    setUser,
+    firstname,
+    lastname,
+    contactNo,
+    address,
+    profileUri,
+    newFirstname,
+    newLastname,
+    newAddress,
+    newContactNo,
+    newProfileUri,
+    setNewFirstname,
+    setNewLastname,
+    setNewContactNo,
+    setNewAddress,
     openEditPassword,
     setOpenEditPassword,
     openEditProfile,
@@ -74,5 +136,6 @@ export const profileController = () => {
     navigate,
     changePasswordHandler,
     changeProfileHandler,
+    editProfileHandler,
   };
 };
