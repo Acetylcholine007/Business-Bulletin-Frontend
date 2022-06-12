@@ -92,7 +92,7 @@ const BusinessPage = () => {
             />
           )}
           {displayMode === 1 && (
-            <Card sx={{ height: "100%" }}>
+            <Card sx={{ height: "100%", width: "100%" }}>
               <MapPane
                 selectedIndex={selectedIndex}
                 setSelectedIndex={setSelectedIndex}

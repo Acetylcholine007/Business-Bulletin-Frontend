@@ -243,7 +243,9 @@ const ProfilePage = () => {
                       },
                     }}
                     onClick={() =>
-                      navigate(`/profile/businesses/${business._id}/edit`)
+                      navigate(`/profile/businesses/${business._id}/edit`, {
+                        state: { business },
+                      })
                     }
                   >
                     <Typography variant="h5">{business.name}</Typography>
