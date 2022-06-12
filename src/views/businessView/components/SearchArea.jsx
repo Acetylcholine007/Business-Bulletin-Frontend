@@ -106,7 +106,7 @@ const SearchArea = ({
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
             value={displayMode}
-            onChange={(e, val) => setDisplayMode('Hello')}
+            onChange={(e, val) => setDisplayMode(val)}
             variant="fullWidth"
           >
             <Tab label="List View" />

@@ -39,6 +39,10 @@ const DashboardPage = () => {
     closeBusinessHandler,
     closeTagHandler,
     saveTagHandler,
+    allowBusinessHandler,
+    allowUserHandler,
+    verifyBusinessHandler,
+    deleteTagHandler,
   } = dashboardController();
 
   return (
@@ -57,63 +61,60 @@ const DashboardPage = () => {
               setPage={setBusinessPage}
               count={businessTotalItems}
               selectHandler={selectBusinessHandler}
+              parentQuery={businessQuery}
+              setParentQuery={setBusinessQuery}
+              queryTarget={businessQueryTarget}
+              setQueryTarget={setBusinessQueryTarget}
+              queryTargets={["Name", "Address", "ContactNo."]}
               headCells={[
                 {
                   id: "logoUri",
                   sortable: false,
                   label: "Brand",
                   align: "center",
-                  image: true,
+                  type: "image",
                 },
                 {
                   id: "name",
                   sortable: true,
                   label: "Business Name",
                   align: "left",
-                  image: false,
+                  type: "text",
                 },
                 {
                   id: "owner",
                   sortable: true,
                   label: "Business Owner",
                   align: "left",
-                  image: false,
+                  type: "text",
                 },
                 {
                   id: "address",
                   sortable: true,
                   label: "Business Address",
                   align: "left",
-                  image: false,
+                  type: "text",
                 },
                 {
                   id: "contactNo",
                   sortable: true,
                   label: "Business Contact",
                   align: "left",
-                  image: false,
+                  type: "text",
                 },
                 {
                   id: "isVerified",
                   sortable: false,
                   label: "Verified",
                   align: "center",
-                  image: false,
-                  button: true,
-                  action: (val) => {
-                    console.log(!val);
-                  },
+                  type: "icon",
                 },
                 {
                   id: "status",
                   sortable: false,
                   label: "Status",
                   align: "center",
-                  image: false,
-                  button: true,
-                  action: (val) => {
-                    console.log(!val);
-                  },
+                  type: "icon",
                 },
               ]}
             />
@@ -133,63 +134,65 @@ const DashboardPage = () => {
               setPage={setUserPage}
               count={userTotalItems}
               selectHandler={selectUserHandler}
+              parentQuery={userQuery}
+              queryTarget={userQueryTarget}
+              setQueryTarget={setUserQueryTarget}
+              setParentQuery={setUserQuery}
+              queryTargets={[
+                "First name",
+                "Last name",
+                "Address",
+                "ContactNo.",
+              ]}
               headCells={[
                 {
                   id: "profileUri",
                   sortable: false,
                   label: "Profile Image",
                   align: "center",
-                  image: true,
+                  type: "image",
                 },
                 {
                   id: "firstname",
                   sortable: true,
                   label: "First Name",
                   align: "left",
-                  image: false,
+                  type: "text",
                 },
                 {
                   id: "lastname",
                   sortable: true,
                   label: "Last Name",
                   align: "left",
-                  image: false,
+                  type: "text",
                 },
                 {
                   id: "address",
                   sortable: true,
                   label: "User Address",
                   align: "left",
-                  image: false,
+                  type: "text",
                 },
                 {
                   id: "contactNo",
                   sortable: true,
                   label: "User Contact",
                   align: "left",
-                  image: false,
+                  type: "text",
                 },
                 {
                   id: "isVerified",
                   sortable: false,
                   label: "Verified",
                   align: "center",
-                  image: false,
-                  button: true,
-                  action: (val) => {
-                    console.log(!val);
-                  },
+                  type: "icon",
                 },
                 {
                   id: "status",
                   sortable: false,
                   label: "Status",
                   align: "center",
-                  image: false,
-                  button: true,
-                  action: (val) => {
-                    console.log(!val);
-                  },
+                  type: "icon",
                 },
               ]}
             />
@@ -217,18 +220,15 @@ const DashboardPage = () => {
                   sortable: true,
                   label: "Name",
                   align: "left",
-                  image: false,
+                  type: "text",
                 },
                 {
                   id: "action",
                   sortable: false,
                   label: "Action",
                   align: "center",
-                  image: false,
-                  button: true,
-                  action: (val) => {
-                    console.log(val);
-                  },
+                  type: "button",
+                  action: deleteTagHandler,
                 },
               ]}
             />
@@ -244,15 +244,14 @@ const DashboardPage = () => {
       <BusinessViewerDialog
         open={businessDialogOpen}
         handleClose={closeBusinessHandler}
-        allowHandler={() => {}}
-        verifiedHandler={() => {}}
+        allowHandler={allowBusinessHandler}
+        verifyHandler={verifyBusinessHandler}
         selectedBusiness={selectedBusiness}
       />
       <UserViewerDialog
         open={userDialogOpen}
         handleClose={closeUserHandler}
-        allowHandler={() => {}}
-        verifiedHandler={() => {}}
+        allowHandler={allowUserHandler}
         selectedUser={selectedUser}
       />
     </Container>

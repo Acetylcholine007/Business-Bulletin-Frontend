@@ -9,7 +9,7 @@ const getUsers = async (
   callback
 ) => {
   let response = await requestAxios(
-    `/users?query=${query}&page=${page}&queryTarget=${queryTarget}`
+    `/users?query=${query}&page=${page}&target=${queryTarget}`
   );
   if (response.status === 200) {
     // snackbarDispatch({
@@ -131,7 +131,13 @@ const changePassword = async (
   loadingDispatch({ type: "SET_PARAMS", payload: { isOpen: false } });
 };
 
-const allowUser = async (userId, loadingDispatch, snackbarDispatch, status) => {
+const allowUser = async (
+  userId,
+  loadingDispatch,
+  snackbarDispatch,
+  callback,
+  status
+) => {
   loadingDispatch({ type: "SET_PARAMS", payload: { isOpen: true } });
   let response = await requestAxios(
     `/users/allowUser/${userId}`,
@@ -148,6 +154,7 @@ const allowUser = async (userId, loadingDispatch, snackbarDispatch, status) => {
         severity: "success",
       },
     });
+    callback();
   } else {
     snackbarDispatch({
       type: "SET_PARAMS",

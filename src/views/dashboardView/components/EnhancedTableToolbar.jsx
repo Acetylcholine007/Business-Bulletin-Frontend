@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import { alpha } from "@mui/material/styles";
 import { AddSharp, SearchSharp } from "@mui/icons-material";
 import {
@@ -11,8 +10,25 @@ import {
   Stack,
   MenuItem,
 } from "@mui/material";
+import { useState } from "react";
+import { useEffect } from "react";
 
-const EnhancedTableToolbar = ({ numSelected, tableTitle, callback }) => {
+const EnhancedTableToolbar = ({
+  numSelected,
+  tableTitle,
+  callback,
+  parentQuery,
+  queryTarget,
+  setQueryTarget,
+  queryTargets,
+  setParentQuery,
+}) => {
+  const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    setQuery(parentQuery);
+  }, []);
+
   return (
     <Toolbar
       sx={{
@@ -47,15 +63,17 @@ const EnhancedTableToolbar = ({ numSelected, tableTitle, callback }) => {
           <TextField
             size="small"
             select
-            value={"Business"}
-            onChange={(e) => {}}
+            value={queryTarget}
+            onChange={(e) => {
+              setQueryTarget(e.target.value);
+            }}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">Look for: </InputAdornment>
               ),
             }}
           >
-            {["Business", "Product", "Service"].map((option) => (
+            {queryTargets.map((option) => (
               <MenuItem key={option} value={option}>
                 {option}
               </MenuItem>
@@ -63,12 +81,19 @@ const EnhancedTableToolbar = ({ numSelected, tableTitle, callback }) => {
           </TextField>
           <TextField
             size="small"
+            value={query}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
                   <SearchSharp />
                 </InputAdornment>
               ),
+            }}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                setParentQuery(query);
+              }
             }}
             placeholder="Query"
           />

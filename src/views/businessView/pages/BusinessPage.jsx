@@ -11,10 +11,13 @@ import {
   InputAdornment,
   MenuItem,
   Autocomplete,
+  Card,
 } from "@mui/material";
 import React from "react";
+import AppMap from "../../../shared/components/AppMap";
 import DetailsPane from "../components/DetailsPane";
 import ListPane from "../components/ListPane";
+import MapPane from "../components/MapPane";
 import SearchArea from "../components/SearchArea";
 import { businessController } from "../controllers/businessController";
 
@@ -79,13 +82,26 @@ const BusinessPage = () => {
             flexDirection: "column",
           }}
         >
-          <ListPane
-            selectedIndex={selectedIndex}
-            setSelectedIndex={setSelectedIndex}
-            page={page}
-            totalItems={totalItems}
-            businesses={businesses}
-          />
+          {displayMode === 0 && (
+            <ListPane
+              selectedIndex={selectedIndex}
+              setSelectedIndex={setSelectedIndex}
+              page={page}
+              totalItems={totalItems}
+              businesses={businesses}
+            />
+          )}
+          {displayMode === 1 && (
+            <Card sx={{ height: "100%" }}>
+              <MapPane
+                selectedIndex={selectedIndex}
+                setSelectedIndex={setSelectedIndex}
+                page={page}
+                totalItems={totalItems}
+                businesses={businesses}
+              />
+            </Card>
+          )}
         </Grid>
         <Grid
           item

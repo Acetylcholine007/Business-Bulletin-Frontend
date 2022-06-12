@@ -17,12 +17,16 @@ export default function TagEditorDialog({
 }) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const [tag, setTag] = useState(selectedTag ? selectedTag.name : "");
+  const [tag, setTag] = useState("");
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    setError(false);
-    setTag("");
+    if (open && selectedTag) {
+      setTag(selectedTag.name);
+    } else {
+      setError(false);
+      setTag("");
+    }
   }, [open]);
 
   return (

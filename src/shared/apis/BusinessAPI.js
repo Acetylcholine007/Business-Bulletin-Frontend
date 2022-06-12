@@ -9,7 +9,7 @@ const getBusinesses = async (
   callback
 ) => {
   let response = await requestAxios(
-    `/businesses?query=${query}&page=${page}&queryTarget=${queryTarget}`
+    `/businesses?query=${query}&page=${page}&target=${queryTarget}`
   );
   if (response.status === 200) {
     callback(response);
@@ -36,7 +36,7 @@ const getUserBusinesses = async (
   userId
 ) => {
   let response = await requestAxios(
-    `/businesses/user/${userId}?query=${query}&page=${page}&queryTarget=${queryTarget}`
+    `/businesses/user/${userId}?query=${query}&page=${page}&target=${queryTarget}`
   );
   if (response.status === 200) {
     callback(response);
@@ -165,7 +165,7 @@ const verifyBusiness = async (
 ) => {
   loadingDispatch({ type: "SET_PARAMS", payload: { isOpen: true } });
   let response = await requestAxios(
-    `/businesses/verify/${businessId}`,
+    `/businesses/verifyBusiness/${businessId}`,
     { isVerified },
     "PATCH"
   );
@@ -201,7 +201,7 @@ const allowBusiness = async (
 ) => {
   loadingDispatch({ type: "SET_PARAMS", payload: { isOpen: true } });
   let response = await requestAxios(
-    `/businesses/verify/${businessId}`,
+    `/businesses/allowBusiness/${businessId}`,
     { status },
     "PATCH"
   );

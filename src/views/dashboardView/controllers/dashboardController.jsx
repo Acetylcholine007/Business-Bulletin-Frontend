@@ -16,7 +16,7 @@ export const dashboardController = () => {
   const [businessQuery, setBusinessQuery] = useState("");
   const [userQuery, setUserQuery] = useState("");
   const [businessQueryTarget, setBusinessQueryTarget] = useState("Name");
-  const [userQueryTarget, setUserQueryTarget] = useState("Name");
+  const [userQueryTarget, setUserQueryTarget] = useState("First name");
   const [businessDialogOpen, setBusinessDialogOpen] = useState(false);
   const [userDialogOpen, setUserDialogOpen] = useState(false);
   const [tagDialogOpen, setTagDialogOpen] = useState(false);
@@ -66,14 +66,83 @@ export const dashboardController = () => {
         { name },
         loadingDispatch,
         snackbarDispatch,
-        () => {},
+        () => {
+          setTags((tags) => {
+            const tag = tags.find((item) => item._id === tagId);
+            tag.name = name;
+            return tags;
+          });
+        },
         tagId
       );
     } else {
       TagAPI.createTag({ name }, loadingDispatch, snackbarDispatch, (tag) => {
-        setTags([...tags, tag]);
+        setTags((tags) => [...tags, tag]);
       });
     }
+  };
+
+  const allowBusinessHandler = (status, businessId) => {
+    setBusinessDialogOpen(false);
+    BusinessAPI.allowBusiness(
+      loadingDispatch,
+      snackbarDispatch,
+      () => {
+        setBusinesses((businesses) => {
+          const business = businesses.find((item) => item._id === businessId);
+          business.status = status;
+          return businesses;
+        });
+      },
+      businessId,
+      status
+    );
+  };
+
+  const verifyBusinessHandler = (isVerified, businessId) => {
+    setBusinessDialogOpen(false);
+    BusinessAPI.verifyBusiness(
+      loadingDispatch,
+      snackbarDispatch,
+      () => {
+        setBusinesses((businesses) => {
+          const business = businesses.find((item) => item._id === businessId);
+          business.isVerified = isVerified;
+          return businesses;
+        });
+      },
+      businessId,
+      isVerified
+    );
+  };
+
+  const allowUserHandler = (status, userId) => {
+    setUserDialogOpen(false);
+    UserAPI.allowUser(
+      userId,
+      loadingDispatch,
+      snackbarDispatch,
+      () => {
+        setUsers((users) => {
+          const user = users.find((item) => item._id === userId);
+          user.status = status;
+          return users;
+        });
+      },
+      status
+    );
+  };
+
+  const deleteTagHandler = (tagId) => {
+    console.log("reached");
+    TagAPI.deleteTag(
+      loadingDispatch,
+      snackbarDispatch,
+      () => {
+        setTags(tags.filter((tag) => tag._id !== tagId));
+      },
+      tagId
+    );
   };
 
   const selectUserHandler = (user) => {
@@ -137,6 +206,10 @@ export const dashboardController = () => {
     closeUserHandler,
     closeBusinessHandler,
     closeTagHandler,
-    saveTagHandler
+    saveTagHandler,
+    allowBusinessHandler,
+    allowUserHandler,
+    verifyBusinessHandler,
+    deleteTagHandler,
   };
 };

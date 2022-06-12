@@ -6,7 +6,7 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TableFooter from "@mui/material/TableFooter";
 import { styled } from "@mui/material/styles";
-import { Card, IconButton } from "@mui/material";
+import { Avatar, Card, IconButton } from "@mui/material";
 import TablePaginationActions from "./TablePaginationActions";
 import EnhancedTableHead from "./EnhancedTableHead";
 import EnhancedTableToolbar from "./EnhancedTableToolbar";
@@ -71,12 +71,17 @@ const DashboardTable = ({
   fullList,
   selectHandler,
   callback,
+  parentQuery,
+  queryTarget,
+  setQueryTarget,
+  queryTargets,
+  setParentQuery,
 }) => {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState(headCells[0].id);
   const [selected, setSelected] = useState([]);
   const [dense, setDense] = useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(fullList ? rows.length : 5);
+  const [rowsPerPage, setRowsPerPage] = useState(fullList ? rows.length : 12);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -129,6 +134,11 @@ const DashboardTable = ({
         numSelected={selected.length}
         tableTitle={tableTitle}
         callback={callback}
+        parentQuery={parentQuery}
+        queryTarget={queryTarget}
+        setQueryTarget={setQueryTarget}
+        queryTargets={queryTargets}
+        setParentQuery={setParentQuery}
       />
       <TableContainer sx={{ flexGrow: 1 }}>
         <Table
@@ -163,20 +173,12 @@ const DashboardTable = ({
                   >
                     {headCells.map((col) => (
                       <>
-                        {col.image && (
+                        {col.type === "image" && (
                           <StyledTableCell align={col.align}>
-                            <img
-                              src={row[col.id]}
-                              alt="brand logo"
-                              style={{
-                                height: "2rem",
-                                width: "2rem",
-                                objectFit: "cover",
-                              }}
-                            />
+                            <Avatar src={row[col.id]} alt="brand logo" />
                           </StyledTableCell>
                         )}
-                        {!col.image && !col.button && (
+                        {col.type === "text" && (
                           <StyledTableCell align={col.align}>
                             {`${
                               col.id === "owner"
@@ -185,20 +187,23 @@ const DashboardTable = ({
                             }`}
                           </StyledTableCell>
                         )}
-                        {col.button && col.id !== "action" && (
+                        {col.type === "icon" && (
                           <StyledTableCell align={col.align}>
-                            <IconButton onClick={() => col.action(row[col.id])}>
-                              {row[col.id] ? (
-                                <CheckCircleSharp color="success" />
-                              ) : (
-                                <BlockSharp color="error" />
-                              )}
-                            </IconButton>
+                            {row[col.id] ? (
+                              <CheckCircleSharp color="success" />
+                            ) : (
+                              <BlockSharp color="error" />
+                            )}
                           </StyledTableCell>
                         )}
-                        {col.button && col.id === "action" && (
+                        {col.type === "button" && (
                           <StyledTableCell align={col.align}>
-                            <IconButton onClick={() => col.action(row._id)}>
+                            <IconButton
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                col.action(row._id);
+                              }}
+                            >
                               <DeleteSharp />
                             </IconButton>
                           </StyledTableCell>
@@ -224,7 +229,7 @@ const DashboardTable = ({
         <TableFooter>
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+              rowsPerPageOptions={[12]}
               count={count}
               rowsPerPage={rowsPerPage}
               page={page}

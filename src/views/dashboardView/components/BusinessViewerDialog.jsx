@@ -24,6 +24,8 @@ export default function BusinessViewerDialog({
   open,
   handleClose,
   selectedBusiness,
+  allowHandler,
+  verifyHandler,
 }) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -40,7 +42,7 @@ export default function BusinessViewerDialog({
     >
       <DialogTitle id="responsive-dialog-title">Business Viewer</DialogTitle>
       {selectedBusiness && (
-        <DialogContent sx={{minHeight: '50vh'}}>
+        <DialogContent sx={{ minHeight: "50vh" }}>
           <Typography variant="h5">{selectedBusiness.name}</Typography>
           <Typography variant="h6">{selectedBusiness.description}</Typography>
           <Box sx={{ borderBottom: 1, borderTop: 1, borderColor: "divider" }}>
@@ -111,14 +113,26 @@ export default function BusinessViewerDialog({
           </CardContent>
         </DialogContent>
       )}
-      <DialogActions>
-        <Button autoFocus onClick={handleClose}>
-          UNVERIFY
-        </Button>
-        <Button onClick={handleClose} autoFocus>
-          BAN
-        </Button>
-      </DialogActions>
+      {selectedBusiness && (
+        <DialogActions>
+          <Button
+            autoFocus
+            onClick={() =>
+              verifyHandler(!selectedBusiness.isVerified, selectedBusiness._id)
+            }
+          >
+            {`${selectedBusiness.isVerified ? "UNVERIFY" : "VERIFY"}`}
+          </Button>
+          <Button
+            onClick={() =>
+              allowHandler(!selectedBusiness.status, selectedBusiness._id)
+            }
+            autoFocus
+          >
+            {`${selectedBusiness.status ? "BAN" : "ALLOW"}`}
+          </Button>
+        </DialogActions>
+      )}
     </Dialog>
   );
 }
