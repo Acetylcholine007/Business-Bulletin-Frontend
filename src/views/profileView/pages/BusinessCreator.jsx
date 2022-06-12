@@ -4,32 +4,43 @@ import {
   Avatar,
   Button,
   Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
   CardHeader,
+  CardMedia,
   Container,
   Grid,
   IconButton,
   List,
   ListItem,
   ListItemAvatar,
+  ListItemButton,
   ListItemText,
   Stack,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import React from "react";
 import LocationPickerDialog from "../components/LocationPickerDialog";
 import ProductEditorDialog from "../components/ProductEditorDialog";
 import ServiceEditorDialog from "../components/ServiceEditorDialog";
+import ImageUriDialog from "../components/ImageUriDialog";
 import { businessCreatorController } from "../controllers/businessCreatorController";
 
 const BusinessCreator = () => {
   const {
-    businessInfo,
-    setBusinessInfo,
+    name,
+    setName,
+    description,
+    setDescription,
+    contactNo,
+    setContactNo,
+    address,
+    setAddress,
     products,
-    setProducts,
     services,
-    setServices,
     chosenTags,
     setChosenTags,
     lat,
@@ -37,7 +48,6 @@ const BusinessCreator = () => {
     lng,
     setLng,
     tags,
-    setTags,
     selectedProduct,
     setSelectedProduct,
     selectedService,
@@ -48,10 +58,23 @@ const BusinessCreator = () => {
     setOpenServiceDialog,
     openLocationPicker,
     setOpenLocationPicker,
+    openBannerPicker,
+    setOpenBannerPicker,
+    openLogoPicker,
+    setOpenLogoPicker,
     businessSaveHandler,
-    productSavehandler,
-    serviceSaveHandler,
-    navigate,
+    logoUri,
+    setLogoUri,
+    bannerUri,
+    setBannerUri,
+    saveServiceHandler,
+    saveProductHandler,
+    removeProductHandler,
+    removeServiceHandler,
+    credentials,
+    setCredentials,
+    currentCredential,
+    setCurrentCredential,
   } = businessCreatorController();
 
   return (
@@ -61,99 +84,146 @@ const BusinessCreator = () => {
           item
           xs={12}
           md={8}
-          sx={{ height: { md: "100%", xs: "initial" }, overflowY: "auto" }}
+          sx={{ height: { md: "100%", xs: "initial" } }}
         >
-          <Card sx={{ p: 2 }}>
-            <Stack spacing={2}>
-              <TextField
-                label="Business Name"
-                type="text"
-                variant="outlined"
-                onChange={(e) =>
-                  setBusinessInfo((newInfo) => {
-                    newInfo.name.value = e.target.value;
-                    return newInfo;
-                  })
-                }
-                value={businessInfo.name.value}
-                fullWidth={true}
-                error={businessInfo.name.error}
-                helperText={
-                  businessInfo.name.error ? "Business name required" : null
-                }
-              />
-              <TextField
-                multiline
-                maxRows={4}
-                label="Business Description"
-                type="text"
-                variant="outlined"
-                onChange={(e) =>
-                  setBusinessInfo((newInfo) => {
-                    newInfo.description.value = e.target.value;
-                    return newInfo;
-                  })
-                }
-                value={businessInfo.description.value}
-                fullWidth={true}
-                error={businessInfo.description.error}
-                helperText={
-                  businessInfo.description.error
-                    ? "Business description required"
-                    : null
-                }
-              />
-              <TextField
-                label="Business Address"
-                type="text"
-                variant="outlined"
-                onChange={(e) =>
-                  setBusinessInfo((newInfo) => {
-                    newInfo.address.value = e.target.value;
-                    return newInfo;
-                  })
-                }
-                value={businessInfo.address.value}
-                fullWidth={true}
-                error={businessInfo.address.error}
-                helperText={
-                  businessInfo.address.error ? "Business address required" : ""
-                }
-              />
-              <TextField
-                label="Business Contact No."
-                type="text"
-                variant="outlined"
-                onChange={(e) =>
-                  setBusinessInfo((newInfo) => {
-                    newInfo.contactNo.value = e.target.value;
-                    return newInfo;
-                  })
-                }
-                value={businessInfo.contactNo.value}
-                fullWidth={true}
-                error={businessInfo.contactNo.error}
-                helperText={
-                  businessInfo.contactNo.error
-                    ? "Business contact no. required"
-                    : null
-                }
-              />
-
-              <Autocomplete
-                multiple
-                options={tags}
-                getOptionLabel={(option) => option.name}
-                defaultValue={chosenTags}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField {...params} label="Tags" placeholder="Tags" />
-                )}
-              />
+          <Card
+            sx={{
+              position: "relative",
+              display: "flex",
+              flexDirection: "column",
+              height: "100%",
+            }}
+          >
+            <Tooltip title="Change Business Banner">
+              <CardActionArea onClick={() => setOpenBannerPicker(true)}>
+                <CardMedia component="img" height="200" src={bannerUri} />
+              </CardActionArea>
+            </Tooltip>
+            <Tooltip title="Change Business Logo">
+              <IconButton
+                sx={{
+                  position: "absolute",
+                  top: 75,
+                  left: 25,
+                }}
+                onClick={() => setOpenLogoPicker(true)}
+              >
+                <Avatar
+                  src={logoUri}
+                  sx={{
+                    height: 100,
+                    width: 100,
+                    border: "2px solid white",
+                  }}
+                />
+              </IconButton>
+            </Tooltip>
+            <CardContent sx={{ overflowY: "auto", flexGrow: 1 }}>
+              <Stack spacing={2}>
+                <TextField
+                  label="Business Name"
+                  type="text"
+                  variant="outlined"
+                  onChange={(e) => setName(e.target.value)}
+                  value={name}
+                  fullWidth={true}
+                  error={false}
+                  helperText={false ? "Business name required" : null}
+                />
+                <TextField
+                  multiline
+                  maxRows={4}
+                  label="Business Description"
+                  type="text"
+                  variant="outlined"
+                  onChange={(e) => setDescription(e.target.value)}
+                  value={description}
+                  fullWidth={true}
+                  error={false}
+                  helperText={false ? "Business description required" : null}
+                />
+                <TextField
+                  label="Business Address"
+                  type="text"
+                  variant="outlined"
+                  onChange={(e) => setAddress(e.target.value)}
+                  value={address}
+                  fullWidth={true}
+                  error={false}
+                  helperText={false ? "Business address required" : ""}
+                />
+                <TextField
+                  label="Business Contact No."
+                  type="text"
+                  variant="outlined"
+                  onChange={(e) => setContactNo(e.target.value)}
+                  value={contactNo}
+                  fullWidth={true}
+                  error={false}
+                  helperText={false ? "Business contact no. required" : null}
+                />
+                <Autocomplete
+                  multiple
+                  options={tags}
+                  getOptionLabel={(option) => option.name}
+                  value={chosenTags}
+                  filterSelectedOptions
+                  onChange={(e, val) => setChosenTags(val)}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Tags" placeholder="Tags" />
+                  )}
+                />
+                <Button onClick={() => setOpenLocationPicker(true)}>
+                  Pick Location on Map
+                </Button>
+                <TextField
+                  label="Credentials URI"
+                  type="text"
+                  variant="outlined"
+                  onChange={(e) => setCurrentCredential(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      setCredentials((credentials) => [
+                        ...credentials,
+                        currentCredential,
+                      ]);
+                      setCurrentCredential("");
+                    }
+                  }}
+                  value={currentCredential}
+                  fullWidth={true}
+                />
+                <List>
+                  {credentials.map((uri, index) => (
+                    <ListItem
+                      key={index}
+                      secondaryAction={
+                        <IconButton
+                          onClick={() =>
+                            setCredentials((credentials) =>
+                              credentials.filter((item) => item !== uri)
+                            )
+                          }
+                          edge="end"
+                          aria-label="delete"
+                        >
+                          <Delete />
+                        </IconButton>
+                      }
+                    >
+                      <ListItemAvatar>
+                        <Avatar alt="Product Image" src={uri} />
+                      </ListItemAvatar>
+                    </ListItem>
+                  ))}
+                </List>
+              </Stack>
+            </CardContent>
+            <CardActions sx={{ justifyContent: "space-evenly" }}>
               <Button variant="contained" onClick={businessSaveHandler}>
                 Save
               </Button>
-            </Stack>
+            </CardActions>
           </Card>
         </Grid>
         <Grid item xs={12} md={4} sx={{ height: "100%" }}>
@@ -164,43 +234,55 @@ const BusinessCreator = () => {
               <CardHeader
                 title="Products"
                 action={
-                  <IconButton onClick={() => {}}>
+                  <IconButton
+                    onClick={() => {
+                      setOpenProductDialog(true);
+                    }}
+                  >
                     <AddCircleSharp />
                   </IconButton>
                 }
               />
               <List sx={{ flexGrow: 1, overflowY: "auto" }}>
-                {[1, 2, 3].map((item, index) => (
-                  <ListItem
-                    alignItems="flex-start"
-                    key={index}
-                    secondaryAction={
-                      <IconButton edge="end" aria-label="delete">
-                        <Delete />
-                      </IconButton>
-                    }
+                {products.map((item, index) => (
+                  <ListItemButton
+                    onClick={() => {
+                      setSelectedProduct(item);
+                      setOpenProductDialog(true);
+                    }}
                   >
-                    <ListItemAvatar>
-                      <Avatar alt="Product Image" src="url('')" />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary="Service Name"
-                      secondary={
-                        <>
-                          <Typography variant="p" color="text.primary">
-                            Price: Php 100
-                          </Typography>
-                          <Typography variant="body2">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing
-                            elit. Fuga voluptatum molestiae animi tempora fugit
-                            saepe optio, laborum ipsum atque, dolore beatae
-                            maiores aspernatur dolor impedit vitae illum nihil!
-                            Esse, pariatur!
-                          </Typography>
-                        </>
+                    <ListItem
+                      alignItems="flex-start"
+                      key={index}
+                      secondaryAction={
+                        <IconButton
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeProductHandler(item._id);
+                          }}
+                        >
+                          <Delete />
+                        </IconButton>
                       }
-                    />
-                  </ListItem>
+                    >
+                      <ListItemAvatar>
+                        <Avatar alt="Product Image" src={item.imagesUri[0]} />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={item.name}
+                        secondary={
+                          <>
+                            <Typography variant="p" color="text.primary">
+                              {`Price: Php ${item.price}`}
+                            </Typography>
+                            <Typography variant="body2">
+                              {item.description}
+                            </Typography>
+                          </>
+                        }
+                      />
+                    </ListItem>
+                  </ListItemButton>
                 ))}
               </List>
             </Card>
@@ -210,43 +292,51 @@ const BusinessCreator = () => {
               <CardHeader
                 title="Services"
                 action={
-                  <IconButton onClick={() => {}}>
+                  <IconButton onClick={() => setOpenServiceDialog(true)}>
                     <AddCircleSharp />
                   </IconButton>
                 }
               />
               <List sx={{ flexGrow: 1, overflowY: "auto" }}>
-                {[1, 2, 3].map((item, index) => (
-                  <ListItem
-                    alignItems="flex-start"
+                {services.map((item, index) => (
+                  <ListItemButton
                     key={index}
-                    secondaryAction={
-                      <IconButton edge="end" aria-label="delete">
-                        <Delete />
-                      </IconButton>
-                    }
+                    onClick={() => {
+                      setSelectedService(item);
+                      setOpenServiceDialog(true);
+                    }}
                   >
-                    <ListItemAvatar>
-                      <Avatar alt="Product Image" src="url('')" />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary="Service Name"
-                      secondary={
-                        <>
-                          <Typography variant="p" color="text.primary">
-                            Price: Php 100
-                          </Typography>
-                          <Typography variant="body2">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing
-                            elit. Fuga voluptatum molestiae animi tempora fugit
-                            saepe optio, laborum ipsum atque, dolore beatae
-                            maiores aspernatur dolor impedit vitae illum nihil!
-                            Esse, pariatur!
-                          </Typography>
-                        </>
+                    <ListItem
+                      alignItems="flex-start"
+                      secondaryAction={
+                        <IconButton
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeServiceHandler(item._id);
+                          }}
+                        >
+                          <Delete />
+                        </IconButton>
                       }
-                    />
-                  </ListItem>
+                    >
+                      <ListItemAvatar>
+                        <Avatar alt="Service Image" src={item.imagesUri[0]} />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={item.name}
+                        secondary={
+                          <>
+                            <Typography variant="p" color="text.primary">
+                              {`Price: Php ${item.price}`}
+                            </Typography>
+                            <Typography variant="body2">
+                              {item.description}
+                            </Typography>
+                          </>
+                        }
+                      />
+                    </ListItem>
+                  </ListItemButton>
                 ))}
               </List>
             </Card>
@@ -254,19 +344,39 @@ const BusinessCreator = () => {
         </Grid>
       </Grid>
       <ServiceEditorDialog
-        open={openProductDialog}
-        handleClose={() => setOpenServiceDialog(false)}
-        saveHandler={productSavehandler}
+        open={openServiceDialog}
+        handleClose={() => {
+          setOpenServiceDialog(false);
+          setSelectedService(null);
+        }}
+        service={selectedService}
+        saveHandler={saveServiceHandler}
       />
       <ProductEditorDialog
-        open={openServiceDialog}
-        handleClose={() => setOpenProductDialog(false)}
-        saveHandler={productSavehandler}
+        open={openProductDialog}
+        handleClose={() => {
+          setOpenProductDialog(false);
+          setSelectedProduct(null);
+        }}
+        product={selectedProduct}
+        saveHandler={saveProductHandler}
       />
       <LocationPickerDialog
         open={openLocationPicker}
         handleClose={() => setOpenLocationPicker(false)}
         saveHandler={() => {}}
+      />
+      <ImageUriDialog
+        open={openLogoPicker}
+        handleClose={() => setOpenLogoPicker(false)}
+        saveHandler={setLogoUri}
+        imageUri={logoUri}
+      />
+      <ImageUriDialog
+        open={openBannerPicker}
+        handleClose={() => setOpenBannerPicker(false)}
+        saveHandler={setBannerUri}
+        imageUri={bannerUri}
       />
     </Container>
   );

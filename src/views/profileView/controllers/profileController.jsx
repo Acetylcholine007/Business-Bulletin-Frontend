@@ -106,6 +106,19 @@ export const profileController = () => {
     );
   };
 
+  const deleteBusinessHandler = async (businessId) => {
+    BusinessAPI.deleteBusiness(
+      loadingDispatch,
+      snackbarDispatch,
+      () => {
+        setBusinesses((businesses) =>
+          businesses.filter((business) => business._id !== businessId)
+        );
+      },
+      businessId
+    );
+  };
+
   return {
     businesses,
     page,
@@ -137,5 +150,6 @@ export const profileController = () => {
     changePasswordHandler,
     changeProfileHandler,
     editProfileHandler,
+    deleteBusinessHandler,
   };
 };

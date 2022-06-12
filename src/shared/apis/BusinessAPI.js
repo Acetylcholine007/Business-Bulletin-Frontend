@@ -91,7 +91,7 @@ const createBusiness = async (
 ) => {
   loadingDispatch({ type: "SET_PARAMS", payload: { isOpen: true } });
   let response = await requestAxios(
-    `/businesses/${userId}`,
+    `/businesses`,
     data,
     "POST",
     "application/json"
@@ -100,7 +100,7 @@ const createBusiness = async (
     snackbarDispatch({
       type: "SET_PARAMS",
       payload: {
-        message: "Business Edited",
+        message: "Business Created",
         isOpen: true,
         severity: "success",
       },

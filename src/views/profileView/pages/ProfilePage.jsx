@@ -23,6 +23,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
+import ConfirmationDialog from "../../../shared/components/ConfirmationDialog";
 import ImageUriDialog from "../components/ImageUriDialog";
 import PasswordEditorDialog from "../components/PasswordEditorDialog";
 import { profileController } from "../controllers/profileController";
@@ -59,6 +60,7 @@ const ProfilePage = () => {
     changePasswordHandler,
     changeProfileHandler,
     editProfileHandler,
+    deleteBusinessHandler,
   } = profileController();
 
   return (
@@ -240,7 +242,6 @@ const ProfilePage = () => {
                         borderRadius: 1,
                       },
                     }}
-                    // selected={selectedIndex === index}
                     onClick={() =>
                       navigate(`/profile/businesses/${business._id}/edit`)
                     }
@@ -252,7 +253,15 @@ const ProfilePage = () => {
                       disableSpacing
                       sx={{ justifyContent: "flex-end" }}
                     >
-                      <Button size="small" onClick={() => {}}>
+                      <Button
+                        size="small"
+                        variant="contained"
+                        color="error"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteBusinessHandler(business._id);
+                        }}
+                      >
                         Delete
                       </Button>
                     </CardActions>
