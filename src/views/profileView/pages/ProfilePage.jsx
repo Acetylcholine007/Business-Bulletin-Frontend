@@ -24,7 +24,7 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import ConfirmationDialog from "../../../shared/components/ConfirmationDialog";
-import ImageUriDialog from "../components/ImageUriDialog";
+import ImagePickerDialog from "../../../shared/components/ImagePickerDialog";
 import PasswordEditorDialog from "../components/PasswordEditorDialog";
 import { profileController } from "../controllers/profileController";
 
@@ -278,7 +278,7 @@ const ProfilePage = () => {
         handleClose={() => setOpenEditPassword(false)}
         saveHandler={changePasswordHandler}
       />
-      <ImageUriDialog
+      <ImagePickerDialog
         open={openEditProfile}
         handleClose={() => setOpenEditProfile(false)}
         saveHandler={changeProfileHandler}

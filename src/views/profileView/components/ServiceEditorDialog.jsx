@@ -135,6 +135,7 @@ export default function ServiceEditorDialog({
               description,
               price,
               imagesUri,
+              businessId: service?.business,
             });
             handleClose();
           }}

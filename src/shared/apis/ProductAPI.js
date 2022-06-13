@@ -69,7 +69,7 @@ const createProduct = async (
 ) => {
   loadingDispatch({ type: "SET_PARAMS", payload: { isOpen: true } });
   let response = await requestAxios(
-    `/products/${data}`,
+    `/products`,
     data,
     "POST",
     "application/json"

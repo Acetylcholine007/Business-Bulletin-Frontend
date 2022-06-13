@@ -69,7 +69,7 @@ const createService = async (
 ) => {
   loadingDispatch({ type: "SET_PARAMS", payload: { isOpen: true } });
   let response = await requestAxios(
-    `/services/${data}`,
+    `/services`,
     data,
     "POST",
     "application/json"

@@ -26,8 +26,8 @@ import React from "react";
 import LocationPickerDialog from "../components/LocationPickerDialog";
 import ProductEditorDialog from "../components/ProductEditorDialog";
 import ServiceEditorDialog from "../components/ServiceEditorDialog";
-import ImageUriDialog from "../components/ImageUriDialog";
 import { businessCreatorController } from "../controllers/businessCreatorController";
+import ImagePickerDialog from "../../../shared/components/ImagePickerDialog";
 
 const BusinessCreator = () => {
   const {
@@ -366,13 +366,13 @@ const BusinessCreator = () => {
         handleClose={() => setOpenLocationPicker(false)}
         saveHandler={() => {}}
       />
-      <ImageUriDialog
+      <ImagePickerDialog
         open={openLogoPicker}
         handleClose={() => setOpenLogoPicker(false)}
         saveHandler={setLogoUri}
         imageUri={logoUri}
       />
-      <ImageUriDialog
+      <ImagePickerDialog
         open={openBannerPicker}
         handleClose={() => setOpenBannerPicker(false)}
         saveHandler={setBannerUri}

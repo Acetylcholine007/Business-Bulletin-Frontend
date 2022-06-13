@@ -3,12 +3,10 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useTheme } from "@mui/material/styles";
 import { TextField } from "@mui/material";
 import { useState } from "react";
-import { useEffect } from "react";
 
-export default function ImageUriDialog({
+export default function ImagePickerDialog({
   open,
   handleClose,
   saveHandler,
@@ -16,10 +14,6 @@ export default function ImageUriDialog({
 }) {
   const [profileUri, setProfileUri] = useState(imageUri);
   const [error, setError] = useState(false);
-
-  useEffect(() => {
-    setError(false);
-  }, [open]);
 
   return (
     <Dialog
@@ -30,7 +24,7 @@ export default function ImageUriDialog({
       aria-labelledby="responsive-dialog-title"
     >
       <DialogTitle id="responsive-dialog-title">
-        Change Profile Image
+        Image Picker
       </DialogTitle>
       <DialogContent>
         <TextField
@@ -40,7 +34,7 @@ export default function ImageUriDialog({
           error={error}
           fullWidth
           onChange={(e) => setProfileUri(e.target.value)}
-          helperText={error ? "Cannot be empty" : null}
+          helperText={error ? "Not valid Image URI" : null}
         />
       </DialogContent>
       <DialogActions>

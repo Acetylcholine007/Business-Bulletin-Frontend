@@ -22,7 +22,7 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import ImageUriDialog from "../../profileView/components/ImageUriDialog";
+import ImagePickerDialog from "../../../shared/components/ImagePickerDialog";
 import { registerController } from "../controllers/registerController";
 
 const RegisterPage = () => {
@@ -209,7 +209,13 @@ const RegisterPage = () => {
           </Button>
         </Stack>
       </Card>
-      <ImageUriDialog
+      {/* <ImageUriDialog
+        open={openProfilePicker}
+        handleClose={() => setOpenProfilePicker(false)}
+        saveHandler={setProfileUri}
+        imageUri={profileUri}
+      /> */}
+      <ImagePickerDialog 
         open={openProfilePicker}
         handleClose={() => setOpenProfilePicker(false)}
         saveHandler={setProfileUri}

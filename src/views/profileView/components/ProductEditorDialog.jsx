@@ -135,6 +135,7 @@ export default function ProductEditorDialog({
               description,
               price,
               imagesUri,
+              businessId: product?.business,
             });
             handleClose();
           }}

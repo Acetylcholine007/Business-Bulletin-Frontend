@@ -58,6 +58,7 @@ export const businessCreatorController = () => {
         logoUri,
         bannerUri,
         tags: chosenTags,
+        credentials
       },
       loadingDispatch,
       snackbarDispatch,
