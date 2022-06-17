@@ -1,66 +1,34 @@
 import requestAxios from "../../utils/requestAxios";
 
-const login = async (email, password, callback, errorCallback) => {
-  let response = await requestAxios(
+const login = async (email, password) => {
+  return await requestAxios(
     "/auth/login",
     { email, password },
     "POST",
     "application/json"
   );
-  if (response.status === 200) {
-    callback(response.user);
-  } else {
-    errorCallback(response.data.message || "Failed to login");
-  }
-  return response;
 };
 
-const signup = async (data, callback, errorCallback) => {
-  let response = await requestAxios(
-    "/auth/signup",
-    data,
-    "POST",
-    "application/json"
-  );
-  if (response.status === 200) {
-    callback(true);
-  } else {
-    errorCallback(response.data.message || "Failed to signup");
-  }
-  return response;
+const signup = async (data) => {
+  return await requestAxios("/auth/signup", data, "POST", "application/json");
 };
 
-const resendConfirmation = async (email, callback, errorCallback) => {
-  let response = await requestAxios(
+const resendConfirmation = async (email) => {
+  return await requestAxios(
     "/auth/sendVerification",
     { email },
     "POST",
     "application/json"
   );
-  if (response.status === 200) {
-    console.log(response);
-    callback("Email verification sent.");
-  } else {
-    errorCallback(response.data.message || "Failed to send verification");
-  }
-  return response;
 };
 
-const sendResetPassword = async (email, callback, errorCallback) => {
-  let response = await requestAxios(
+const sendResetPassword = async (email) => {
+  return await requestAxios(
     "/auth/sendResetPassword",
     { email },
     "POST",
     "application/json"
   );
-  if (response.status === 200) {
-    callback();
-  } else {
-    errorCallback(
-      response.data.message || "Failed to send password reset link"
-    );
-  }
-  return response;
 };
 
 const AuthAPI = {

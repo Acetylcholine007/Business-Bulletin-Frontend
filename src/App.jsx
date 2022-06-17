@@ -1,14 +1,18 @@
 import { createTheme, ThemeProvider } from "@mui/material";
 import { amber, green } from "@mui/material/colors";
-import { useState } from "react";
-import "./App.css";
+import { useSelector, useDispatch } from "react-redux";
 import AdminLayout from "./layouts/AdminLayout";
 import PublicLayout from "./layouts/PublicLayout";
 import UserLayout from "./layouts/UserLayout";
-import AuthContextProvider from "./shared/contexts/AuthContext";
-import LoadingContextProvider from "./shared/contexts/LoadingContext";
-import SnackbarContextProvider from "./shared/contexts/SnackbarContext";
-import { useAuth } from "./shared/hooks/useAuth";
+import "./App.css";
+import { useEffect } from "react";
+import { logout } from "./store/actions/authActions";
+import { useNavigate } from "react-router-dom";
+import { LS_USER_DATA } from "./utils/constants";
+import { authActions } from "./store/slices/AuthSlice";
+import { profileActions } from "./store/slices/ProfileSlice";
+
+let logoutTimer;
 
 const theme = createTheme({
   palette: {
@@ -18,46 +22,83 @@ const theme = createTheme({
 });
 
 function App() {
-  const {
-    token,
-    login,
-    logout,
-    updateLocalUserData,
-    userId,
-    accountType,
-    contactNo,
-    address,
-    profileUri,
-    firstname,
-    lastname,
-  } = useAuth();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { token, accountType, tokenExpirationDate } = useSelector(
+    (state) => state.auth
+  );
+
+  // AUTO LOGOUT
+  useEffect(() => {
+    if (token && tokenExpirationDate) {
+      const remainingTime =
+        new Date(tokenExpirationDate).getTime() - new Date().getTime();
+      logoutTimer = setTimeout(() => dispatch(logout(navigate)), remainingTime);
+    } else {
+      clearTimeout(logoutTimer);
+    }
+  }, [token, tokenExpirationDate]);
+
+  // AUTO LOGIN
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem(LS_USER_DATA));
+    if (
+      storedData &&
+      storedData.token &&
+      new Date(storedData.tokenExpirationDate) > new Date()
+    ) {
+      let TOKEN_EXPIRATION = new Date(new Date().getTime() + 1000 * 60 * 60);
+      const expirationDate = !!tokenExpirationDate
+        ? new Date(tokenExpirationDate) < new Date()
+          ? TOKEN_EXPIRATION
+          : tokenExpirationDate
+        : TOKEN_EXPIRATION.toISOString();
+      dispatch(
+        authActions.setData({
+          userId: storedData.userId,
+          token: storedData.token,
+          firstname: storedData.firstname,
+          lastname: storedData.lastname,
+          contactNo: storedData.contactNo,
+          address: storedData.address,
+          profileUri: storedData.profileUri,
+          accountType: storedData.accountType,
+          tokenExpirationDate: expirationDate,
+        })
+      );
+      dispatch(
+        profileActions.setUser({
+          userId: storedData.userId,
+          token: storedData.token,
+          firstname: storedData.firstname,
+          lastname: storedData.lastname,
+          contactNo: storedData.contactNo,
+          address: storedData.address,
+          profileUri: storedData.profileUri,
+          accountType: storedData.accountType,
+        })
+      );
+      dispatch(
+        profileActions.setNewUser({
+          userId: storedData.userId,
+          token: storedData.token,
+          firstname: storedData.firstname,
+          lastname: storedData.lastname,
+          contactNo: storedData.contactNo,
+          address: storedData.address,
+          profileUri: storedData.profileUri,
+          accountType: storedData.accountType,
+        })
+      );
+      navigate("/");
+    }
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
-      <SnackbarContextProvider>
-        <LoadingContextProvider>
-          <AuthContextProvider
-            value={{
-              isLoggedIn: !!token,
-              token,
-              userId,
-              accountType,
-              firstname,
-              lastname,
-              contactNo,
-              address,
-              profileUri,
-              updateLocalUserData,
-              login,
-              logout,
-            }}
-          >
-            {!!token && accountType == 1 && <UserLayout />}
-            {!!token && accountType == 2 && <AdminLayout />}
-            {!token && <PublicLayout />}
-          </AuthContextProvider>
-        </LoadingContextProvider>
-      </SnackbarContextProvider>
+      {!!token && accountType == 1 && <UserLayout />}
+      {!!token && accountType == 2 && <AdminLayout />}
+      {!token && <PublicLayout />}
     </ThemeProvider>
   );
 }

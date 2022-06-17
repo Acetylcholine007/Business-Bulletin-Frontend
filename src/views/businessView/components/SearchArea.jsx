@@ -11,19 +11,17 @@ import {
   MenuItem,
   Autocomplete,
 } from "@mui/material";
-import React from "react";
+import { useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { businessActions } from "../../../store/slices/BusinessSlice";
 
-const SearchArea = ({
-  searchAreaRef,
-  searchBoxRef,
-  selectedTags,
-  displayMode,
-  setDisplayMode,
-  setQuery,
-  entity,
-  changeEntity,
-  tags
-}) => {
+const SearchArea = ({ searchAreaRef }) => {
+  const { entity, tags, selectedTags, presentationTabIndex } = useSelector(
+    (state) => state.business
+  );
+  const searchBoxRef = useRef();
+  const dispatch = useDispatch();
+
   return (
     <Grid
       container
@@ -49,12 +47,17 @@ const SearchArea = ({
               ),
             }}
             placeholder="Query"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                dispatch(businessActions.setQuery(searchBoxRef.current.value));
+              }
+            }}
           />
           <Button
             variant="contained"
             onClick={() => {
-              setQuery(searchBoxRef.current.value);
-              searchBoxRef.current.value = "";
+              dispatch(businessActions.setQuery(searchBoxRef.current.value));
+              // searchBoxRef.current.value = "";
             }}
           >
             Search
@@ -67,7 +70,9 @@ const SearchArea = ({
           select
           fullWidth
           value={entity}
-          onChange={(e) => changeEntity(e.target.value)}
+          onChange={(e) =>
+            dispatch(businessActions.setEntity({ entity: e.target.value }))
+          }
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">Looking for: </InputAdornment>
@@ -82,7 +87,7 @@ const SearchArea = ({
         </TextField>
       </Grid>
       <Grid item xs={12} md={9}>
-        {entity === "Business" && (
+        {tags && (
           <Autocomplete
             sx={{ flexGrow: 1 }}
             multiple
@@ -101,18 +106,6 @@ const SearchArea = ({
             )}
           />
         )}
-      </Grid>
-      <Grid item xs={12}>
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <Tabs
-            value={displayMode}
-            onChange={(e, val) => setDisplayMode(val)}
-            variant="fullWidth"
-          >
-            <Tab label="List View" />
-            <Tab label="Map View" />
-          </Tabs>
-        </Box>
       </Grid>
     </Grid>
   );

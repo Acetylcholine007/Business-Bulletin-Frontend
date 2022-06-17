@@ -2,9 +2,9 @@ import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import BusinessAPI from "../../../shared/apis/BusinessAPI";
 import TagAPI from "../../../shared/apis/TagAPI";
-import { AuthContext } from "../../../shared/contexts/AuthContext";
-import { LoadingContext } from "../../../shared/contexts/LoadingContext";
-import { SnackbarContext } from "../../../shared/contexts/SnackbarContext";
+// import { AuthContext } from "../../../shared/contexts/AuthContext";
+// import { LoadingContext } from "../../../shared/contexts/LoadingContext";
+// import { SnackbarContext } from "../../../shared/contexts/SnackbarContext";
 
 export const businessCreatorController = () => {
   const [name, setName] = useState("");
@@ -37,78 +37,78 @@ export const businessCreatorController = () => {
   const { userId } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    TagAPI.getTags(loadingDispatch, snackbarDispatch, (data) => {
-      setTags(data.tags);
-    });
-  }, []);
+//   useEffect(() => {
+//     TagAPI.getTags(loadingDispatch, snackbarDispatch, (data) => {
+//       setTags(data.tags);
+//     });
+//   }, []);
 
-  const businessSaveHandler = async () => {
-    BusinessAPI.createBusiness(
-      {
-        name,
-        description,
-        contactNo,
-        address,
-        owner: userId,
-        products,
-        services,
-        lat,
-        lng,
-        logoUri,
-        bannerUri,
-        tags: chosenTags,
-        credentials
-      },
-      loadingDispatch,
-      snackbarDispatch,
-      () => {
-        navigate("/profile");
-      }
-    );
-  };
+//   const businessSaveHandler = async () => {
+//     BusinessAPI.createBusiness(
+//       {
+//         name,
+//         description,
+//         contactNo,
+//         address,
+//         owner: userId,
+//         products,
+//         services,
+//         lat,
+//         lng,
+//         logoUri,
+//         bannerUri,
+//         tags: chosenTags,
+//         credentials
+//       },
+//       loadingDispatch,
+//       snackbarDispatch,
+//       () => {
+//         navigate("/profile");
+//       }
+//     );
+//   };
 
-  const saveProductHandler = (isEdit, product) => {
-    if (isEdit) {
-      setProducts((products) => {
-        const targetProduct = products.find((item) => item._id === product._id);
-        targetProduct.name = product.name;
-        targetProduct.description = product.description;
-        targetProduct.price = product.price;
-        targetProduct.imagesUri = product.imagesUri;
-        return products;
-      });
-    } else {
-      setProducts((products) => [...products, product]);
-    }
-  };
+//   const saveProductHandler = (isEdit, product) => {
+//     if (isEdit) {
+//       setProducts((products) => {
+//         const targetProduct = products.find((item) => item._id === product._id);
+//         targetProduct.name = product.name;
+//         targetProduct.description = product.description;
+//         targetProduct.price = product.price;
+//         targetProduct.imagesUri = product.imagesUri;
+//         return products;
+//       });
+//     } else {
+//       setProducts((products) => [...products, product]);
+//     }
+//   };
 
-  const removeProductHandler = (productId) => {
-    setProducts((products) =>
-      products.filter((item) => item._id !== productId)
-    );
-  };
+//   const removeProductHandler = (productId) => {
+//     setProducts((products) =>
+//       products.filter((item) => item._id !== productId)
+//     );
+//   };
 
-  const saveServiceHandler = (isEdit, service) => {
-    if (isEdit) {
-      setServices((services) => {
-        const targetService = services.find((item) => item._id === service._id);
-        targetService.name = service.name;
-        targetService.description = service.description;
-        targetService.price = service.price;
-        targetService.imagesUri = service.imagesUri;
-        return services;
-      });
-    } else {
-      setServices((services) => [...services, service]);
-    }
-  };
+//   const saveServiceHandler = (isEdit, service) => {
+//     if (isEdit) {
+//       setServices((services) => {
+//         const targetService = services.find((item) => item._id === service._id);
+//         targetService.name = service.name;
+//         targetService.description = service.description;
+//         targetService.price = service.price;
+//         targetService.imagesUri = service.imagesUri;
+//         return services;
+//       });
+//     } else {
+//       setServices((services) => [...services, service]);
+//     }
+//   };
 
-  const removeServiceHandler = (serviceId) => {
-    setServices((services) =>
-      services.filter((item) => item._id !== serviceId)
-    );
-  };
+//   const removeServiceHandler = (serviceId) => {
+//     setServices((services) =>
+//       services.filter((item) => item._id !== serviceId)
+//     );
+//   };
 
   return {
     name,

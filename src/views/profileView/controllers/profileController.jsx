@@ -1,10 +1,7 @@
-import { useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import BusinessAPI from "../../../shared/apis/BusinessAPI";
 import UserAPI from "../../../shared/apis/UserAPI";
-import { AuthContext } from "../../../shared/contexts/AuthContext";
-import { LoadingContext } from "../../../shared/contexts/LoadingContext";
-import { SnackbarContext } from "../../../shared/contexts/SnackbarContext";
 
 export const profileController = () => {
   const auth = useContext(AuthContext);
@@ -25,99 +22,99 @@ export const profileController = () => {
   const [openEditPassword, setOpenEditPassword] = useState(false);
   const [openEditProfile, setOpenEditProfile] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const { snackbarDispatch } = useContext(SnackbarContext);
-  const { loadingDispatch } = useContext(LoadingContext);
+//   const { snackbarDispatch } = useContext(SnackbarContext);
+//   const { loadingDispatch } = useContext(LoadingContext);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    UserAPI.getUser(
-      auth.userId,
-      loadingDispatch,
-      snackbarDispatch,
-      ({ user }) => {
-        setFirstname(user.firstname);
-        setLastname(user.lastname);
-        setContactNo(user.contactNo);
-        setAddress(user.address);
-        setProfileUri(user.profileUri);
-        setNewFirstname(user.firstname);
-        setNewLastname(user.lastname);
-        setNewContactNo(user.contactNo);
-        setNewAddress(user.address);
-        setNewProfileUri(user.profileUri);
-      }
-    );
-  }, []);
+//   useEffect(() => {
+//     UserAPI.getUser(
+//       auth.userId,
+//       loadingDispatch,
+//       snackbarDispatch,
+//       ({ user }) => {
+//         setFirstname(user.firstname);
+//         setLastname(user.lastname);
+//         setContactNo(user.contactNo);
+//         setAddress(user.address);
+//         setProfileUri(user.profileUri);
+//         setNewFirstname(user.firstname);
+//         setNewLastname(user.lastname);
+//         setNewContactNo(user.contactNo);
+//         setNewAddress(user.address);
+//         setNewProfileUri(user.profileUri);
+//       }
+//     );
+//   }, []);
 
-  useEffect(() => {
-    BusinessAPI.getUserBusinesses(
-      "",
-      page,
-      "",
-      loadingDispatch,
-      snackbarDispatch,
-      (data) => {
-        setBusinesses(data.businesses);
-        setTotalItems(data.totalItems);
-      },
-      auth.userId
-    );
-  }, []);
+//   useEffect(() => {
+//     BusinessAPI.getUserBusinesses(
+//       "",
+//       page,
+//       "",
+//       loadingDispatch,
+//       snackbarDispatch,
+//       (data) => {
+//         setBusinesses(data.businesses);
+//         setTotalItems(data.totalItems);
+//       },
+//       auth.userId
+//     );
+//   }, []);
 
-  const changePasswordHandler = async (password) => {
-    UserAPI.changePassword(
-      password,
-      loadingDispatch,
-      snackbarDispatch,
-      auth.userId
-    );
-  };
+//   const changePasswordHandler = async (password) => {
+//     UserAPI.changePassword(
+//       password,
+//       loadingDispatch,
+//       snackbarDispatch,
+//       auth.userId
+//     );
+//   };
 
-  const changeProfileHandler = async (newProfileUri) => {
-    setNewProfileUri(newProfileUri);
-  };
+//   const changeProfileHandler = async (newProfileUri) => {
+//     setNewProfileUri(newProfileUri);
+//   };
 
-  const editProfileHandler = async () => {
-    UserAPI.editUser(
-      {
-        firstname: newFirstname,
-        lastname: newLastname,
-        contactNo: newContactNo,
-        address: newAddress,
-        profileUri: newProfileUri,
-      },
-      loadingDispatch,
-      snackbarDispatch,
-      () => {
-        setFirstname(newFirstname);
-        setLastname(newLastname);
-        setContactNo(newContactNo);
-        setAddress(newAddress);
-        setProfileUri(newProfileUri);
-        auth.updateLocalUserData(
-          newFirstname,
-          newLastname,
-          newContactNo,
-          newAddress,
-          newProfileUri
-        );
-      },
-      auth.userId
-    );
-  };
+//   const editProfileHandler = async () => {
+//     UserAPI.editUser(
+//       {
+//         firstname: newFirstname,
+//         lastname: newLastname,
+//         contactNo: newContactNo,
+//         address: newAddress,
+//         profileUri: newProfileUri,
+//       },
+//       loadingDispatch,
+//       snackbarDispatch,
+//       () => {
+//         setFirstname(newFirstname);
+//         setLastname(newLastname);
+//         setContactNo(newContactNo);
+//         setAddress(newAddress);
+//         setProfileUri(newProfileUri);
+//         auth.updateLocalUserData(
+//           newFirstname,
+//           newLastname,
+//           newContactNo,
+//           newAddress,
+//           newProfileUri
+//         );
+//       },
+//       auth.userId
+//     );
+//   };
 
-  const deleteBusinessHandler = async (businessId) => {
-    BusinessAPI.deleteBusiness(
-      loadingDispatch,
-      snackbarDispatch,
-      () => {
-        setBusinesses((businesses) =>
-          businesses.filter((business) => business._id !== businessId)
-        );
-      },
-      businessId
-    );
-  };
+//   const deleteBusinessHandler = async (businessId) => {
+//     BusinessAPI.deleteBusiness(
+//       loadingDispatch,
+//       snackbarDispatch,
+//       () => {
+//         setBusinesses((businesses) =>
+//           businesses.filter((business) => business._id !== businessId)
+//         );
+//       },
+//       businessId
+//     );
+//   };
 
   return {
     businesses,

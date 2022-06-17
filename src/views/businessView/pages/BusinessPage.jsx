@@ -1,71 +1,56 @@
-import { SearchSharp } from "@mui/icons-material";
 import {
-  Box,
   Container,
   Grid,
-  Stack,
-  Tab,
-  Tabs,
-  TextField,
-  Button,
-  InputAdornment,
-  MenuItem,
-  Autocomplete,
   Card,
+  CardHeader,
+  ButtonGroup,
+  Button,
+  CardContent,
 } from "@mui/material";
-import React from "react";
-import AppMap from "../../../shared/components/AppMap";
+import React, { useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchBusinesses,
+  initializePage,
+} from "../../../store/actions/businessActions";
+import { businessActions } from "../../../store/slices/BusinessSlice";
 import DetailsPane from "../components/DetailsPane";
 import ListPane from "../components/ListPane";
 import MapPane from "../components/MapPane";
 import SearchArea from "../components/SearchArea";
-import { businessController } from "../controllers/businessController";
 
 const BusinessPage = () => {
+  const dispatch = useDispatch();
+  const searchAreaRef = useRef();
   const {
-    businesses,
-    products,
-    services,
+    query,
     page,
-    setPage,
-    totalItems,
-    setQuery,
     queryTarget,
-    setQueryTarget,
     entity,
-    changeEntity,
-    displayMode,
-    setDisplayMode,
-    selectedIndex,
-    setSelectedIndex,
-    tabIndex,
-    setTabIndex,
-    searchBoxRef,
-    searchAreaRef,
-    tags,
-    selectedTags,
-    setSelectedTags,
-  } = businessController();
+    presentationTabIndex,
+    initialized,
+  } = useSelector((state) => state.business);
+
+  useEffect(() => {
+    dispatch(initializePage(query, page, queryTarget, entity));
+  }, []);
+
+  useEffect(() => {
+    if (initialized) {
+      dispatch(fetchBusinesses(query, page, queryTarget, entity));
+    }
+  }, [entity, page, query, queryTarget]);
 
   return (
     <Container
       sx={{ height: "100%", display: "flex", flexDirection: "column" }}
     >
-      <SearchArea
-        searchAreaRef={searchAreaRef}
-        searchBoxRef={searchBoxRef}
-        selectedTags={selectedTags}
-        displayMode={displayMode}
-        setDisplayMode={setDisplayMode}
-        setQuery={setQuery}
-        entity={entity}
-        changeEntity={changeEntity}
-        tags={tags}
-      />
+      <SearchArea searchAreaRef={searchAreaRef} />
       <Grid
         container
         spacing={2}
         sx={{
+          paddingTop: 2,
           height: `calc(100% - ${
             searchAreaRef.current ? searchAreaRef.current.clientHeight : "177"
           }px)`,
@@ -82,26 +67,52 @@ const BusinessPage = () => {
             flexDirection: "column",
           }}
         >
-          {displayMode === 0 && (
-            <ListPane
-              selectedIndex={selectedIndex}
-              setSelectedIndex={setSelectedIndex}
-              page={page}
-              totalItems={totalItems}
-              businesses={businesses}
+          <Card
+            elevation={4}
+            sx={{ height: "100%", display: "flex", flexDirection: "column" }}
+          >
+            <CardHeader
+              sx={{ backgroundColor: "primary.light" }}
+              title="Businesses"
+              action={
+                <ButtonGroup
+                  variant="outlined"
+                  sx={{ backgroundColor: "white" }}
+                >
+                  <Button
+                    variant={
+                      presentationTabIndex === 0 ? "contained" : "outlined"
+                    }
+                    onClick={() =>
+                      dispatch(businessActions.setPresentationTabIndex(0))
+                    }
+                  >
+                    List
+                  </Button>
+                  <Button
+                    variant={
+                      presentationTabIndex === 1 ? "contained" : "outlined"
+                    }
+                    onClick={() =>
+                      dispatch(businessActions.setPresentationTabIndex(1))
+                    }
+                  >
+                    Map
+                  </Button>
+                </ButtonGroup>
+              }
             />
-          )}
-          {displayMode === 1 && (
-            <Card sx={{ height: "100%", width: "100%" }}>
-              <MapPane
-                selectedIndex={selectedIndex}
-                setSelectedIndex={setSelectedIndex}
-                page={page}
-                totalItems={totalItems}
-                businesses={businesses}
-              />
-            </Card>
-          )}
+            <CardContent
+              sx={{
+                p: presentationTabIndex === 0 ? 2 : 0,
+                paddingBottom: "0px !important",
+                flexGrow: 1,
+              }}
+            >
+              {presentationTabIndex === 0 && <ListPane />}
+              {presentationTabIndex === 1 && <MapPane />}
+            </CardContent>
+          </Card>
         </Grid>
         <Grid
           item
@@ -112,12 +123,7 @@ const BusinessPage = () => {
             display: { xs: "none", md: "block" },
           }}
         >
-          <DetailsPane
-            tabIndex={tabIndex}
-            selectedIndex={selectedIndex}
-            setTabIndex={setTabIndex}
-            businesses={businesses}
-          />
+          <DetailsPane />
         </Grid>
       </Grid>
     </Container>

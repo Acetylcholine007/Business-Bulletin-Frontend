@@ -15,27 +15,46 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import {
+  login,
+  resetPassword,
+  verify,
+} from "../../../store/actions/authActions";
+import React, { useReducer } from "react";
+import { useNavigate } from "react-router-dom";
 import PasswordResetDialog from "../components/PasswordResetDialog";
-import { signinController } from "../controllers/signinController";
+import { useDispatch, useSelector } from "react-redux";
+
+const initialState = {
+  email: "",
+  password: "",
+  isShowPassword: false,
+  isShowResendVerification: false,
+  isShowPasswordReset: false,
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "email":
+      return { ...state, email: action.payload };
+    case "password":
+      return { ...state, password: action.payload };
+    case "showPassword":
+      return { ...state, isShowPassword: action.payload };
+    case "showResendVerification":
+      return { ...state, isShowResendVerification: action.payload };
+    case "showPasswordReset":
+      return { ...state, isShowPasswordReset: action.payload };
+    default:
+      return state;
+  }
+};
 
 const SigninPage = () => {
-  const {
-    open,
-    email,
-    setEmail,
-    password,
-    setPassword,
-    showPassword,
-    setShowPassword,
-    handleOpen,
-    handleClose,
-    signinHandler,
-    passwordResetHandler,
-    verificationHandler,
-    showResendVerification,
-    navigate
-  } = signinController();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { tokenExpirationDate } = useSelector((state) => state.auth);
+  const [signinState, signinDispatch] = useReducer(reducer, initialState);
 
   return (
     <Container
@@ -66,8 +85,10 @@ const SigninPage = () => {
             label="Email"
             type="email"
             variant="outlined"
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
+            onChange={(e) =>
+              signinDispatch({ type: "email", payload: e.target.value })
+            }
+            value={signinState.email}
             fullWidth={true}
             InputProps={{
               startAdornment: (
@@ -76,15 +97,16 @@ const SigninPage = () => {
                 </InputAdornment>
               ),
             }}
-            sx={{ backgroundColor: "#f1effb" }}
           />
           <TextField
             id="password"
             label="Password"
-            type={showPassword ? "text" : "password"}
+            type={signinState.isShowPassword ? "text" : "password"}
             variant="outlined"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
+            onChange={(e) =>
+              signinDispatch({ type: "password", payload: e.target.value })
+            }
+            value={signinState.password}
             fullWidth={true}
             InputProps={{
               startAdornment: (
@@ -94,8 +116,15 @@ const SigninPage = () => {
               ),
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton onClick={() => setShowPassword(!showPassword)}>
-                    {showPassword ? (
+                  <IconButton
+                    onClick={() =>
+                      signinDispatch({
+                        type: "showPassword",
+                        payload: !signinState.isShowPassword,
+                      })
+                    }
+                  >
+                    {signinState.isShowPassword ? (
                       <VisibilityOffSharp />
                     ) : (
                       <VisibilitySharp />
@@ -104,21 +133,37 @@ const SigninPage = () => {
                 </InputAdornment>
               ),
             }}
-            sx={{ backgroundColor: "#f1effb" }}
           />
           <Button
             variant="contained"
             size="large"
-            onClick={signinHandler}
+            onClick={() =>
+              dispatch(
+                login(
+                  signinState.email,
+                  signinState.password,
+                  tokenExpirationDate,
+                  navigate
+                )
+              )
+            }
             fullWidth
           >
             LOGIN
           </Button>
-          <Button variant="text" onClick={handleOpen}>
+          <Button
+            variant="text"
+            onClick={() =>
+              signinDispatch({ type: "showPasswordReset", payload: true })
+            }
+          >
             Forgot Password?
           </Button>
-          {showResendVerification && (
-            <Button variant="text" onClick={verificationHandler}>
+          {signinState.isShowResendVerification && (
+            <Button
+              variant="text"
+              onClick={() => dispatch(verify(signinState.email))}
+            >
               Resend Email Verification
             </Button>
           )}
@@ -134,9 +179,11 @@ const SigninPage = () => {
         </Stack>
       </Card>
       <PasswordResetDialog
-        open={open}
-        handleClose={handleClose}
-        handleSubmit={passwordResetHandler}
+        open={signinState.isShowPasswordReset}
+        handleClose={() =>
+          signinDispatch({ type: "showPasswordReset", payload: false })
+        }
+        handleSubmit={(email) => dispatch(resetPassword(email))}
       />
     </Container>
   );

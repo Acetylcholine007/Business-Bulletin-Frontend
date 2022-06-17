@@ -16,12 +16,6 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import MuiDrawer from "@mui/material/Drawer";
-import MuiAppBar from "@mui/material/AppBar";
-import { AuthContext } from "../shared/contexts/AuthContext";
-import { SnackbarContext } from "../shared/contexts/SnackbarContext";
-import { LoadingContext } from "../shared/contexts/LoadingContext";
-import { styled, useTheme, alpha } from "@mui/material/styles";
 import {
   AccountCircleOutlined,
   ChevronLeft,
@@ -29,8 +23,14 @@ import {
   LogoutSharp,
   Menu,
 } from "@mui/icons-material";
+import MuiDrawer from "@mui/material/Drawer";
+import MuiAppBar from "@mui/material/AppBar";
+import { styled, useTheme, alpha } from "@mui/material/styles";
 import AdminRoutes, { adminRoutes } from "../routes/AdminRoutes";
 import { useLocation, useNavigate } from "react-router-dom";
+import { logout } from "../store/actions/authActions";
+import { useSelector, useDispatch } from "react-redux";
+import { feedbackActions } from "../store/slices/FeedbackSlice";
 
 const drawerWidth = 240;
 
@@ -100,9 +100,9 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 const AdminLayout = () => {
-  const { firstname, lastname, logout } = useContext(AuthContext);
-  const { loadingParams } = useContext(LoadingContext);
-  const { snackbarParams, snackbarDispatch } = useContext(SnackbarContext);
+  const dispatch = useDispatch();
+  const { firstname, lastname } = useSelector((state) => state.auth);
+  const feedbackParams = useSelector((state) => state.feedback);
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const handleDrawerOpen = () => {
@@ -153,7 +153,7 @@ const AdminLayout = () => {
             </Typography>
           </Button>
         </Toolbar>
-        {loadingParams.isOpen && <LinearProgress />}
+        {feedbackParams.isLoading && <LinearProgress />}
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
@@ -209,7 +209,7 @@ const AdminLayout = () => {
           <Divider />
           <ListItem disablePadding sx={{ display: "block" }}>
             <ListItemButton
-              onClick={logout}
+              onClick={() => dispatch(logout(navigate))}
               sx={{
                 minHeight: 48,
                 justifyContent: open ? "initial" : "center",
@@ -257,21 +257,19 @@ const AdminLayout = () => {
         </Box>
         <Snackbar
           anchorOrigin={{
-            vertical: snackbarParams.vertical,
-            horizontal: snackbarParams.horizontal,
+            vertical: "bottom",
+            horizontal: "center",
           }}
-          open={snackbarParams.isOpen}
-          autoHideDuration={snackbarParams.duration}
-          onClose={() => snackbarDispatch({ type: "SET_SHOW", payload: false })}
+          open={feedbackParams.isShowSnackbar}
+          autoHideDuration={feedbackParams.snackbarDuration}
+          onClose={() => dispatch(feedbackActions.closeNotification())}
         >
           <Alert
-            onClose={() =>
-              snackbarDispatch({ type: "SET_SHOW", payload: false })
-            }
-            severity={snackbarParams.severity}
+            onClose={() => dispatch(feedbackActions.closeNotification())}
+            severity={feedbackParams.severity}
             variant="filled"
           >
-            {snackbarParams.message}
+            {feedbackParams.snackbarMessage}
           </Alert>
         </Snackbar>
       </Box>

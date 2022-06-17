@@ -1,4 +1,4 @@
-import { AddCircleSharp, AddSharp, Delete } from "@mui/icons-material";
+import { AddCircleSharp, Delete } from "@mui/icons-material";
 import {
   Autocomplete,
   Avatar,
@@ -22,60 +22,27 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import LocationPickerDialog from "../components/LocationPickerDialog";
 import ProductEditorDialog from "../components/ProductEditorDialog";
 import ServiceEditorDialog from "../components/ServiceEditorDialog";
-import { businessCreatorController } from "../controllers/businessCreatorController";
+import { useDispatch, useSelector } from "react-redux";
 import ImagePickerDialog from "../../../shared/components/ImagePickerDialog";
+import { profileActions } from "../../../store/slices/ProfileSlice";
 
 const BusinessCreator = () => {
-  const {
-    name,
-    setName,
-    description,
-    setDescription,
-    contactNo,
-    setContactNo,
-    address,
-    setAddress,
-    products,
-    services,
-    chosenTags,
-    setChosenTags,
-    lat,
-    setLat,
-    lng,
-    setLng,
-    tags,
-    selectedProduct,
-    setSelectedProduct,
-    selectedService,
-    setSelectedService,
-    openProductDialog,
-    setOpenProductDialog,
-    openServiceDialog,
-    setOpenServiceDialog,
-    openLocationPicker,
-    setOpenLocationPicker,
-    openBannerPicker,
-    setOpenBannerPicker,
-    openLogoPicker,
-    setOpenLogoPicker,
-    businessSaveHandler,
-    logoUri,
-    setLogoUri,
-    bannerUri,
-    setBannerUri,
-    saveServiceHandler,
-    saveProductHandler,
-    removeProductHandler,
-    removeServiceHandler,
-    credentials,
-    setCredentials,
-    currentCredential,
-    setCurrentCredential,
-  } = businessCreatorController();
+  const {business} = useSelector((state) => state.profile);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(
+      profileActions.setBusiness({
+        products: [],
+        services: [],
+        credentials: [],
+      })
+    );
+  }, []);
 
   return (
     <Container sx={{ height: "100%" }}>
@@ -96,7 +63,7 @@ const BusinessCreator = () => {
           >
             <Tooltip title="Change Business Banner">
               <CardActionArea onClick={() => setOpenBannerPicker(true)}>
-                <CardMedia component="img" height="200" src={bannerUri} />
+                <CardMedia component="img" height="200" src={business.bannerUri} />
               </CardActionArea>
             </Tooltip>
             <Tooltip title="Change Business Logo">
@@ -109,7 +76,7 @@ const BusinessCreator = () => {
                 onClick={() => setOpenLogoPicker(true)}
               >
                 <Avatar
-                  src={logoUri}
+                  src={business.logoUri}
                   sx={{
                     height: 100,
                     width: 100,
@@ -125,7 +92,7 @@ const BusinessCreator = () => {
                   type="text"
                   variant="outlined"
                   onChange={(e) => setName(e.target.value)}
-                  value={name}
+                  value={business.name}
                   fullWidth={true}
                   error={false}
                   helperText={false ? "Business name required" : null}
@@ -137,7 +104,7 @@ const BusinessCreator = () => {
                   type="text"
                   variant="outlined"
                   onChange={(e) => setDescription(e.target.value)}
-                  value={description}
+                  value={business.description}
                   fullWidth={true}
                   error={false}
                   helperText={false ? "Business description required" : null}
@@ -147,7 +114,7 @@ const BusinessCreator = () => {
                   type="text"
                   variant="outlined"
                   onChange={(e) => setAddress(e.target.value)}
-                  value={address}
+                  value={business.address}
                   fullWidth={true}
                   error={false}
                   helperText={false ? "Business address required" : ""}
@@ -157,7 +124,7 @@ const BusinessCreator = () => {
                   type="text"
                   variant="outlined"
                   onChange={(e) => setContactNo(e.target.value)}
-                  value={contactNo}
+                  value={business.contactNo}
                   fullWidth={true}
                   error={false}
                   helperText={false ? "Business contact no. required" : null}
@@ -166,7 +133,7 @@ const BusinessCreator = () => {
                   multiple
                   options={tags}
                   getOptionLabel={(option) => option.name}
-                  value={chosenTags}
+                  value={business.tags}
                   filterSelectedOptions
                   onChange={(e, val) => setChosenTags(val)}
                   renderInput={(params) => (
@@ -190,11 +157,11 @@ const BusinessCreator = () => {
                       setCurrentCredential("");
                     }
                   }}
-                  value={currentCredential}
+                  value={business.credentials}
                   fullWidth={true}
                 />
                 <List>
-                  {credentials.map((uri, index) => (
+                  {business.credentials.map((uri, index) => (
                     <ListItem
                       key={index}
                       secondaryAction={
@@ -244,7 +211,7 @@ const BusinessCreator = () => {
                 }
               />
               <List sx={{ flexGrow: 1, overflowY: "auto" }}>
-                {products.map((item, index) => (
+                {business.products.map((item, index) => (
                   <ListItemButton
                     onClick={() => {
                       setSelectedProduct(item);
@@ -298,7 +265,7 @@ const BusinessCreator = () => {
                 }
               />
               <List sx={{ flexGrow: 1, overflowY: "auto" }}>
-                {services.map((item, index) => (
+                {business.services.map((item, index) => (
                   <ListItemButton
                     key={index}
                     onClick={() => {
