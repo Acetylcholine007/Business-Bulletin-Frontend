@@ -129,13 +129,13 @@ export default function ServiceEditorDialog({
       <DialogActions>
         <Button
           onClick={() => {
-            saveHandler(!!service, {
+            saveHandler(service === null, {
               _id: service ? service._id : Math.random(),
               name,
               description,
               price,
               imagesUri,
-              businessId: service?.business,
+              business: service?.business,
             });
             handleClose();
           }}

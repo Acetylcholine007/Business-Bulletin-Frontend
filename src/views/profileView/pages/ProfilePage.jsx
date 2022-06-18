@@ -25,6 +25,7 @@ import {
   editProfile,
   fetchBusinesses,
 } from "../../../store/actions/profileActions";
+import { feedbackActions } from "../../../store/slices/FeedbackSlice";
 import { profileActions } from "../../../store/slices/ProfileSlice";
 import PasswordEditorDialog from "../components/PasswordEditorDialog";
 
@@ -235,7 +236,18 @@ const ProfilePage = () => {
               </Button>
               <Button
                 variant="contained"
-                onClick={() => navigate("/profile/businesses/new")}
+                onClick={() => {
+                  dispatch(feedbackActions.setLoading(true));
+                  dispatch(
+                    profileActions.setBusiness({
+                      products: [],
+                      services: [],
+                      tags: [],
+                      credentials: [],
+                    })
+                  );
+                  navigate("/profile/businesses/new");
+                }}
               >
                 Create New Business
               </Button>
@@ -274,11 +286,11 @@ const ProfilePage = () => {
                         borderRadius: 1,
                       },
                     }}
-                    onClick={() =>
-                      navigate(`/profile/businesses/${business._id}/edit`, {
-                        state: { business },
-                      })
-                    }
+                    onClick={() => {
+                      dispatch(feedbackActions.setLoading(true));
+                      dispatch(profileActions.setBusiness(business));
+                      navigate(`/profile/businesses/${business._id}/edit`);
+                    }}
                   >
                     <Typography variant="h5">{business.name}</Typography>
                     <Divider />

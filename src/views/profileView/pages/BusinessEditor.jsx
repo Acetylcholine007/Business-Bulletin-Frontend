@@ -1,4 +1,4 @@
-import { AddCircleSharp, AddSharp, Delete } from "@mui/icons-material";
+import { AddCircleSharp, Delete } from "@mui/icons-material";
 import {
   Autocomplete,
   Avatar,
@@ -22,60 +22,47 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import LocationPickerDialog from "../components/LocationPickerDialog";
 import ProductEditorDialog from "../components/ProductEditorDialog";
 import ServiceEditorDialog from "../components/ServiceEditorDialog";
-import { businessEditorController } from "../controllers/businessEditorController";
+import { useDispatch, useSelector } from "react-redux";
 import ImagePickerDialog from "../../../shared/components/ImagePickerDialog";
+import { profileActions } from "../../../store/slices/ProfileSlice";
+import {
+  createBusiness,
+  creatorSaveProduct,
+  creatorSaveService,
+  deleteProduct,
+  deleteService,
+  editBusiness,
+  editorSaveProduct,
+  editorSaveService,
+  fetchTags,
+} from "../../../store/actions/profileActions";
+import { useNavigate } from "react-router-dom";
+import { feedbackActions } from "../../../store/slices/FeedbackSlice";
 
-const BusinessEditor = () => {
+const BusinessEditor = ({ isCreator }) => {
   const {
-    name,
-    setName,
-    description,
-    setDescription,
-    contactNo,
-    setContactNo,
-    address,
-    setAddress,
-    products,
-    services,
-    chosenTags,
-    setChosenTags,
-    lat,
-    setLat,
-    lng,
-    setLng,
+    business,
     tags,
-    selectedProduct,
-    setSelectedProduct,
-    selectedService,
-    setSelectedService,
-    openProductDialog,
-    setOpenProductDialog,
-    openServiceDialog,
-    setOpenServiceDialog,
-    openLocationPicker,
-    setOpenLocationPicker,
-    openBannerPicker,
-    setOpenBannerPicker,
-    openLogoPicker,
-    setOpenLogoPicker,
-    businessSaveHandler,
-    logoUri,
-    setLogoUri,
-    bannerUri,
-    setBannerUri,
-    saveServiceHandler,
-    saveProductHandler,
-    removeProductHandler,
-    removeServiceHandler,
-    credentials,
-    setCredentials,
     currentCredential,
-    setCurrentCredential,
-  } = businessEditorController();
+    isShowServiceDialog,
+    isShowProductDialog,
+    isShowLocationDialog,
+    isShowLogoDialog,
+    isShowBannerDialog,
+    selectedProduct,
+    selectedService,
+  } = useSelector((state) => state.profile);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(fetchTags());
+    dispatch(feedbackActions.setLoading(false));
+  }, []);
 
   return (
     <Container sx={{ height: "100%" }}>
@@ -95,8 +82,16 @@ const BusinessEditor = () => {
             }}
           >
             <Tooltip title="Change Business Banner">
-              <CardActionArea onClick={() => setOpenBannerPicker(true)}>
-                <CardMedia component="img" height="200" src={bannerUri} />
+              <CardActionArea
+                onClick={() =>
+                  dispatch(profileActions.setShowBannerDialog(true))
+                }
+              >
+                <CardMedia
+                  component="img"
+                  height="200"
+                  src={business.bannerUri}
+                />
               </CardActionArea>
             </Tooltip>
             <Tooltip title="Change Business Logo">
@@ -106,10 +101,10 @@ const BusinessEditor = () => {
                   top: 75,
                   left: 25,
                 }}
-                onClick={() => setOpenLogoPicker(true)}
+                onClick={() => dispatch(profileActions.setShowLogoDialog(true))}
               >
                 <Avatar
-                  src={logoUri}
+                  src={business.logoUri}
                   sx={{
                     height: 100,
                     width: 100,
@@ -124,8 +119,15 @@ const BusinessEditor = () => {
                   label="Business Name"
                   type="text"
                   variant="outlined"
-                  onChange={(e) => setName(e.target.value)}
-                  value={name}
+                  onChange={(e) =>
+                    dispatch(
+                      profileActions.editBusiness({
+                        field: "name",
+                        value: e.target.value,
+                      })
+                    )
+                  }
+                  value={business.name}
                   fullWidth={true}
                   error={false}
                   helperText={false ? "Business name required" : null}
@@ -136,8 +138,15 @@ const BusinessEditor = () => {
                   label="Business Description"
                   type="text"
                   variant="outlined"
-                  onChange={(e) => setDescription(e.target.value)}
-                  value={description}
+                  onChange={(e) =>
+                    dispatch(
+                      profileActions.editBusiness({
+                        field: "description",
+                        value: e.target.value,
+                      })
+                    )
+                  }
+                  value={business.description}
                   fullWidth={true}
                   error={false}
                   helperText={false ? "Business description required" : null}
@@ -146,8 +155,15 @@ const BusinessEditor = () => {
                   label="Business Address"
                   type="text"
                   variant="outlined"
-                  onChange={(e) => setAddress(e.target.value)}
-                  value={address}
+                  onChange={(e) =>
+                    dispatch(
+                      profileActions.editBusiness({
+                        field: "address",
+                        value: e.target.value,
+                      })
+                    )
+                  }
+                  value={business.address}
                   fullWidth={true}
                   error={false}
                   helperText={false ? "Business address required" : ""}
@@ -156,56 +172,70 @@ const BusinessEditor = () => {
                   label="Business Contact No."
                   type="text"
                   variant="outlined"
-                  onChange={(e) => setContactNo(e.target.value)}
-                  value={contactNo}
+                  onChange={(e) =>
+                    dispatch(
+                      profileActions.editBusiness({
+                        field: "contactNo",
+                        value: e.target.value,
+                      })
+                    )
+                  }
+                  value={business.contactNo}
                   fullWidth={true}
                   error={false}
                   helperText={false ? "Business contact no. required" : null}
                 />
                 <Autocomplete
                   multiple
-                  options={tags}
+                  options={tags ? tags : []}
                   getOptionLabel={(option) => option.name}
-                  value={chosenTags}
+                  loading={tags === null}
+                  value={business.tags}
                   filterSelectedOptions
-                  onChange={(e, val) => {
-                    setChosenTags(val);
-                    console.log(chosenTags);
-                  }}
+                  onChange={(e, val) =>
+                    dispatch(
+                      profileActions.editBusiness({
+                        field: "tags",
+                        value: val,
+                      })
+                    )
+                  }
                   renderInput={(params) => (
                     <TextField {...params} label="Tags" placeholder="Tags" />
                   )}
                 />
-                <Button onClick={() => setOpenLocationPicker(true)}>
+                <Button
+                  onClick={() =>
+                    dispatch(profileActions.setShowLocationDialog(true))
+                  }
+                >
                   Pick Location on Map
                 </Button>
                 <TextField
                   label="Credentials URI"
                   type="text"
                   variant="outlined"
-                  onChange={(e) => setCurrentCredential(e.target.value)}
+                  onChange={(e) =>
+                    dispatch(
+                      profileActions.setCurrentCredential(e.target.value)
+                    )
+                  }
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      setCredentials((credentials) => [
-                        ...credentials,
-                        currentCredential,
-                      ]);
-                      setCurrentCredential("");
+                      dispatch(profileActions.addCredential());
                     }
                   }}
                   value={currentCredential}
                   fullWidth={true}
                 />
                 <List>
-                  {credentials.map((uri, index) => (
+                  {business.credentials.map((uri, index) => (
                     <ListItem
                       key={index}
                       secondaryAction={
                         <IconButton
                           onClick={() =>
-                            setCredentials((credentials) =>
-                              credentials.filter((item) => item !== uri)
-                            )
+                            dispatch(profileActions.removeCredential(uri))
                           }
                           edge="end"
                           aria-label="delete"
@@ -223,7 +253,14 @@ const BusinessEditor = () => {
               </Stack>
             </CardContent>
             <CardActions sx={{ justifyContent: "space-evenly" }}>
-              <Button variant="contained" onClick={businessSaveHandler}>
+              <Button
+                variant="contained"
+                onClick={
+                  isCreator
+                    ? () => dispatch(createBusiness(business, navigate))
+                    : () => dispatch(editBusiness(business, navigate))
+                }
+              >
                 Save
               </Button>
             </CardActions>
@@ -239,7 +276,12 @@ const BusinessEditor = () => {
                 action={
                   <IconButton
                     onClick={() => {
-                      setOpenProductDialog(true);
+                      dispatch(
+                        profileActions.setShowProductDialog({
+                          product: null,
+                          status: true,
+                        })
+                      );
                     }}
                   >
                     <AddCircleSharp />
@@ -247,11 +289,15 @@ const BusinessEditor = () => {
                 }
               />
               <List sx={{ flexGrow: 1, overflowY: "auto" }}>
-                {products.map((item, index) => (
+                {business.products.map((item, index) => (
                   <ListItemButton
                     onClick={() => {
-                      setSelectedProduct(item);
-                      setOpenProductDialog(true);
+                      dispatch(
+                        profileActions.setShowProductDialog({
+                          product: item,
+                          status: true,
+                        })
+                      );
                     }}
                   >
                     <ListItem
@@ -261,7 +307,7 @@ const BusinessEditor = () => {
                         <IconButton
                           onClick={(e) => {
                             e.stopPropagation();
-                            removeProductHandler(item._id);
+                            dispatch(deleteProduct(true, item._id));
                           }}
                         >
                           <Delete />
@@ -295,18 +341,31 @@ const BusinessEditor = () => {
               <CardHeader
                 title="Services"
                 action={
-                  <IconButton onClick={() => setOpenServiceDialog(true)}>
+                  <IconButton
+                    onClick={() =>
+                      dispatch(
+                        profileActions.setShowServiceDialog({
+                          service: null,
+                          status: true,
+                        })
+                      )
+                    }
+                  >
                     <AddCircleSharp />
                   </IconButton>
                 }
               />
               <List sx={{ flexGrow: 1, overflowY: "auto" }}>
-                {services.map((item, index) => (
+                {business.services.map((item, index) => (
                   <ListItemButton
                     key={index}
                     onClick={() => {
-                      setSelectedService(item);
-                      setOpenServiceDialog(true);
+                      dispatch(
+                        profileActions.setShowServiceDialog({
+                          service: item,
+                          status: true,
+                        })
+                      );
                     }}
                   >
                     <ListItem
@@ -315,7 +374,7 @@ const BusinessEditor = () => {
                         <IconButton
                           onClick={(e) => {
                             e.stopPropagation();
-                            removeServiceHandler(item._id);
+                            dispatch(deleteService(true, item._id));
                           }}
                         >
                           <Delete />
@@ -347,39 +406,81 @@ const BusinessEditor = () => {
         </Grid>
       </Grid>
       <ServiceEditorDialog
-        open={openServiceDialog}
+        open={isShowServiceDialog}
         handleClose={() => {
-          setOpenServiceDialog(false);
-          setSelectedService(null);
+          dispatch(
+            profileActions.setShowServiceDialog({
+              service: null,
+              status: false,
+            })
+          );
         }}
         service={selectedService}
-        saveHandler={saveServiceHandler}
+        saveHandler={
+          isCreator
+            ? (isNew, service) => {
+                dispatch(creatorSaveService(isNew, service));
+              }
+            : (isNew, service) => {
+                dispatch(editorSaveService(isNew, service));
+              }
+        }
       />
       <ProductEditorDialog
-        open={openProductDialog}
+        open={isShowProductDialog}
         handleClose={() => {
-          setOpenProductDialog(false);
-          setSelectedProduct(null);
+          dispatch(
+            profileActions.setShowProductDialog({
+              product: null,
+              status: false,
+            })
+          );
         }}
         product={selectedProduct}
-        saveHandler={saveProductHandler}
+        saveHandler={
+          isCreator
+            ? (isNew, product) => {
+                dispatch(creatorSaveProduct(isNew, product));
+              }
+            : (isNew, product) => {
+                dispatch(editorSaveProduct(isNew, product));
+              }
+        }
       />
       <LocationPickerDialog
-        open={openLocationPicker}
-        handleClose={() => setOpenLocationPicker(false)}
-        saveHandler={() => {}}
+        open={isShowLocationDialog}
+        handleClose={() =>
+          dispatch(profileActions.setShowLocationDialog(false))
+        }
+        saveHandler={() => {
+          (lat, lng) =>
+            dispatch(
+              profileActions.editBusiness({
+                field: "coordinates",
+                value: { lat, lng },
+              })
+            );
+        }}
       />
       <ImagePickerDialog
-        open={openLogoPicker}
-        handleClose={() => setOpenLogoPicker(false)}
-        saveHandler={setLogoUri}
-        imageUri={logoUri}
+        open={isShowLogoDialog}
+        handleClose={() => dispatch(profileActions.setShowLogoDialog(false))}
+        saveHandler={(uri) =>
+          dispatch(
+            profileActions.editBusiness({ field: "logoUri", value: uri })
+          )
+        }
+        imageUri={business.logoUri}
       />
       <ImagePickerDialog
-        open={openBannerPicker}
-        handleClose={() => setOpenBannerPicker(false)}
-        saveHandler={setBannerUri}
-        imageUri={bannerUri}
+        open={isShowBannerDialog}
+        handleClose={() => dispatch(profileActions.setShowBannerDialog(false))}
+        saveHandler={(uri) =>
+          dispatch(
+            profileActions.editBusiness({ field: "bannerUri", value: uri })
+          )
+        }
+        imageUri={business.bannerUri}
       />
     </Container>
   );

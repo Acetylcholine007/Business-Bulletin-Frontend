@@ -9,6 +9,8 @@ const profileSlice = createSlice({
     selectedService: null,
     user: null,
     newUser: null,
+    currentCredential: "",
+    tags: null,
     page: 1,
     totalItems: 0,
     profileEditMode: false,
@@ -16,6 +18,9 @@ const profileSlice = createSlice({
     isShowImageDialog: false,
     isShowProductDialog: false,
     isShowServiceDialog: false,
+    isShowLogoDialog: false,
+    isShowBannerDialog: false,
+    isShowLocationDialog: false,
   },
   reducers: {
     setBusinesses(state, action) {
@@ -33,6 +38,21 @@ const profileSlice = createSlice({
         (business) => business._id !== action.payload
       );
     },
+    setTags(state, action) {
+      state.tags = action.payload;
+    },
+    setCurrentCredential(state, action) {
+      state.currentCredential = action.payload;
+    },
+    addCredential(state) {
+      state.business.credentials.push(state.currentCredential);
+      state.currentCredential = "";
+    },
+    removeCredential(state, action) {
+      state.business.credentials = state.business.credentials.filter(
+        (credential) => credential !== action.payload
+      );
+    },
     setUser(state, action) {
       state.user = action.payload;
     },
@@ -46,12 +66,13 @@ const profileSlice = createSlice({
       state.user = state.newUser;
     },
     addProduct(state, action) {
-      state.business.products.push(action.payload);
+      state.business.products.push({...action.payload, business: state.business._id});
     },
     editProduct(state, action) {
+      console.log(action.payload)
       state.isShowProductDialog = false;
       const product = state.business.products.find(
-        (item) => item._id === action.payload.productId
+        (item) => item._id === action.payload._id
       );
       product.name = action.payload.name;
       product.description = action.payload.price;
@@ -64,12 +85,12 @@ const profileSlice = createSlice({
       );
     },
     addService(state, action) {
-      state.business.services.push(action.payload);
+      state.business.services.push({...action.payload, business: state.business._id});
     },
     editService(state, action) {
       state.isShowServiceDialog = false;
       const service = state.business.services.find(
-        (item) => item._id === action.payload.serviceId
+        (item) => item._id === action.payload._id
       );
       service.name = action.payload.name;
       service.description = action.payload.price;
@@ -95,6 +116,23 @@ const profileSlice = createSlice({
     },
     setShowImageDialog(state, action) {
       state.isShowImageDialog = action.payload;
+    },
+    setShowLogoDialog(state, action) {
+      state.isShowLogoDialog = action.payload;
+    },
+    setShowBannerDialog(state, action) {
+      state.isShowBannerDialog = action.payload;
+    },
+    setShowLocationDialog(state, action) {
+      state.isShowLocationDialog = action.payload;
+    },
+    setShowProductDialog(state, action) {
+      state.selectedProduct = action.payload.product;
+      state.isShowProductDialog = action.payload.status;
+    },
+    setShowServiceDialog(state, action) {
+      state.selectedService = action.payload.service;
+      state.isShowServiceDialog = action.payload.status;
     },
   },
 });

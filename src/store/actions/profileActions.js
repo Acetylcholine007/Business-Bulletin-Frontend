@@ -2,6 +2,7 @@ import BusinessAPI from "../../shared/apis/BusinessAPI";
 import ProductAPI from "../../shared/apis/ProductAPI";
 import ServiceAPI from "../../shared/apis/ServiceAPI";
 import UserAPI from "../../shared/apis/UserAPI";
+import TagAPI from "../../shared/apis/TagAPI";
 import { authActions } from "../slices/AuthSlice";
 import { feedbackActions } from "../slices/FeedbackSlice";
 import { profileActions } from "../slices/ProfileSlice";
@@ -18,6 +19,25 @@ export const fetchBusinesses = (page, userId) => {
           businessTotalItems: response.totalItems,
         })
       );
+    } else {
+      dispatch(
+        feedbackActions.setNotification({
+          snackbarMessage: response.data.message,
+          isShowSnackbar: true,
+          severity: "error",
+        })
+      );
+    }
+  };
+};
+
+export const fetchTags = () => {
+  return async (dispatch) => {
+    dispatch(feedbackActions.setLoading(true));
+    const response = await TagAPI.getTags();
+    dispatch(feedbackActions.setLoading(false));
+    if (response.status === 200) {
+      dispatch(profileActions.setTags(response.tags));
     } else {
       dispatch(
         feedbackActions.setNotification({
@@ -163,33 +183,53 @@ export const editBusiness = (business, navigate) => {
   };
 };
 
-export const saveProduct = (product) => {
+export const creatorSaveProduct = (isNew, product) => {
+  return (dispatch) => {
+    if (isNew) {
+      dispatch(profileActions.addProduct(product));
+    } else {
+      dispatch(profileActions.editProduct(product));
+    }
+  };
+};
+
+export const creatorSaveService = (isNew, service) => {
+  return (dispatch) => {
+    if (isNew) {
+      dispatch(profileActions.addService(service));
+    } else {
+      dispatch(profileActions.editService(service));
+    }
+  };
+};
+
+export const editorSaveProduct = (isNew, product) => {
   return async (dispatch) => {
     dispatch(feedbackActions.setLoading(true));
     let response;
-    if (product._id) {
-      response = await ProductAPI.editProduct(product, product._id);
-    } else {
+    if (isNew) {
       response = await ProductAPI.createProduct(product);
+    } else {
+      response = await ProductAPI.editProduct(product, product._id);
     }
     dispatch(feedbackActions.setLoading(false));
     if (response.status === 200) {
-      if (tagId) {
+      if (isNew) {
+        dispatch(profileActions.addProduct(product));
+        dispatch(
+          feedbackActions.setNotification({
+            snackbarMessage: "Product added",
+            isShowSnackbar: true,
+            severity: "success",
+          })
+        );
+      } else {
         dispatch(
           profileActions.editProduct({ productId: product._id, product })
         );
         dispatch(
           feedbackActions.setNotification({
             snackbarMessage: "Product edited",
-            isShowSnackbar: true,
-            severity: "success",
-          })
-        );
-      } else {
-        dispatch(profileActions.addProduct(product));
-        dispatch(
-          feedbackActions.setNotification({
-            snackbarMessage: "Product added",
             isShowSnackbar: true,
             severity: "success",
           })
@@ -237,33 +277,33 @@ export const deleteProduct = (isNew, productId) => {
   };
 };
 
-export const saveService = (service) => {
+export const editorSaveService = (isNew, service) => {
   return async (dispatch) => {
     dispatch(feedbackActions.setLoading(true));
     let response;
-    if (service._id) {
-      response = await ServiceAPI.editService(service, service._id);
-    } else {
+    if (isNew) {
       response = await ServiceAPI.createService(service);
+    } else {
+      response = await ServiceAPI.editService(service, service._id);
     }
     dispatch(feedbackActions.setLoading(false));
     if (response.status === 200) {
-      if (tagId) {
+      if (isNew) {
+        dispatch(profileActions.addService(service));
+        dispatch(
+          feedbackActions.setNotification({
+            snackbarMessage: "Service added",
+            isShowSnackbar: true,
+            severity: "success",
+          })
+        );
+      } else {
         dispatch(
           profileActions.editService({ serviceId: service._id, service })
         );
         dispatch(
           feedbackActions.setNotification({
             snackbarMessage: "Service edited",
-            isShowSnackbar: true,
-            severity: "success",
-          })
-        );
-      } else {
-        dispatch(profileActions.addService(service));
-        dispatch(
-          feedbackActions.setNotification({
-            snackbarMessage: "Service added",
             isShowSnackbar: true,
             severity: "success",
           })
