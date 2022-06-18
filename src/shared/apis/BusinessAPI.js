@@ -2,13 +2,13 @@ import requestAxios from "../../utils/requestAxios";
 
 const getBusinesses = async (query, page, queryTarget) => {
   return await requestAxios(
-    `/businesses?query=${query}&page=${page}&target=${queryTarget}`
+    `/businesses?query=${query}&page=${page}&target=${queryTarget.toLowerCase()}`
   );
 };
 
 const getUserBusinesses = async (query, page, queryTarget, userId) => {
   return await requestAxios(
-    `/businesses/user/${userId}?query=${query}&page=${page}&target=${queryTarget}`
+    `/businesses/user/${userId}?query=${query}&page=${page}&target=${queryTarget.toLowerCase()}`
   );
 };
 

@@ -41,6 +41,13 @@ const profileSlice = createSlice({
     setTags(state, action) {
       state.tags = action.payload;
     },
+    extractSelectedTags(state) {
+      const chosenTagIds = state.business.tags.map((tag) => tag._id);
+      const extractedTags = state.tags.filter((item) =>
+        chosenTagIds.includes(item._id)
+      );
+      state.business.tags = extractedTags;
+    },
     setCurrentCredential(state, action) {
       state.currentCredential = action.payload;
     },
@@ -66,10 +73,13 @@ const profileSlice = createSlice({
       state.user = state.newUser;
     },
     addProduct(state, action) {
-      state.business.products.push({...action.payload, business: state.business._id});
+      state.business.products.push({
+        ...action.payload,
+        business: state.business._id,
+      });
     },
     editProduct(state, action) {
-      console.log(action.payload)
+      console.log(action.payload);
       state.isShowProductDialog = false;
       const product = state.business.products.find(
         (item) => item._id === action.payload._id
@@ -85,7 +95,10 @@ const profileSlice = createSlice({
       );
     },
     addService(state, action) {
-      state.business.services.push({...action.payload, business: state.business._id});
+      state.business.services.push({
+        ...action.payload,
+        business: state.business._id,
+      });
     },
     editService(state, action) {
       state.isShowServiceDialog = false;

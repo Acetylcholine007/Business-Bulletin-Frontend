@@ -38,6 +38,7 @@ export const fetchTags = () => {
     dispatch(feedbackActions.setLoading(false));
     if (response.status === 200) {
       dispatch(profileActions.setTags(response.tags));
+      dispatch(profileActions.extractSelectedTags());
     } else {
       dispatch(
         feedbackActions.setNotification({

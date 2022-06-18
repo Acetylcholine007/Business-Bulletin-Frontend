@@ -46,13 +46,13 @@ const DashboardPage = () => {
 
   useEffect(() => {
     if (initialized) {
-      dispatch(fetchBusinesses(businessQuery, businessPage, businessQuery));
+      dispatch(fetchBusinesses(businessQuery, businessPage, businessQueryTarget));
     }
   }, [businessPage, businessQuery, businessQueryTarget]);
 
   useEffect(() => {
     if (initialized) {
-      dispatch(fetchUsers(businessQuery, userPage, userQuery));
+      dispatch(fetchUsers(userQuery, userPage, userQueryTarget));
     }
   }, [userPage, userQuery, userQueryTarget]);
 

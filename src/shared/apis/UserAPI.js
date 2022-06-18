@@ -2,7 +2,7 @@ import requestAxios from "../../utils/requestAxios";
 
 const getUsers = async (query, page, queryTarget) => {
   return await requestAxios(
-    `/users?query=${query}&page=${page}&target=${queryTarget}`
+    `/users?query=${query}&page=${page}&target=${queryTarget.toLowerCase()}`
   );
 };
 
