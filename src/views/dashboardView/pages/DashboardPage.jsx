@@ -1,49 +1,60 @@
 import { Container, Grid } from "@mui/material";
-import React from "react";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  allowBusiness,
+  allowUser,
+  deleteTag,
+  fetchBusinesses,
+  fetchUsers,
+  initializePage,
+  saveTag,
+  verifyBusiness,
+} from "../../../store/actions/dashboardActions";
+import { dashboardActions } from "../../../store/slices/DashboardSlice";
 import BusinessViewerDialog from "../components/BusinessViewerDialog";
 import DashboardTable from "../components/DashboardTable";
 import TagEditorDialog from "../components/TagEditorDialog";
 import UserViewerDialog from "../components/UserViewerDialog";
-import { dashboardController } from "../controllers/dashboardController";
 
 const DashboardPage = () => {
   const {
+    initialized,
     businesses,
     users,
     tags,
     businessPage,
-    setBusinessPage,
     userPage,
-    setUserPage,
     businessTotalItems,
     userTotalItems,
     businessQuery,
-    setBusinessQuery,
     userQuery,
-    setUserQuery,
     businessQueryTarget,
-    setBusinessQueryTarget,
     userQueryTarget,
-    setUserQueryTarget,
-    businessDialogOpen,
-    userDialogOpen,
-    tagDialogOpen,
-    setTagDialogOpen,
-    selectedBusiness,
-    selectBusinessHandler,
-    selectedUser,
-    selectUserHandler,
+    isShowBusinessDialog,
+    isShowUserDialog,
+    isShowTagDialog,
     selectedTag,
-    selectTagHandler,
-    closeUserHandler,
-    closeBusinessHandler,
-    closeTagHandler,
-    saveTagHandler,
-    allowBusinessHandler,
-    allowUserHandler,
-    verifyBusinessHandler,
-    deleteTagHandler,
-  } = dashboardController();
+    selectedUser,
+    selectedBusiness,
+  } = useSelector((state) => state.dashboard);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(initializePage("", 1, ""));
+  }, []);
+
+  useEffect(() => {
+    if (initialized) {
+      dispatch(fetchBusinesses(businessQuery, businessPage, businessQueryTarget));
+    }
+  }, [businessPage, businessQuery, businessQueryTarget]);
+
+  useEffect(() => {
+    if (initialized) {
+      dispatch(fetchUsers(userQuery, userPage, userQueryTarget));
+    }
+  }, [userPage, userQuery, userQueryTarget]);
 
   return (
     <Container sx={{ height: "100%" }}>
@@ -58,13 +69,24 @@ const DashboardPage = () => {
               tableTitle="Businesses"
               rows={businesses}
               page={businessPage - 1}
-              setPage={setBusinessPage}
+              setPage={(val) => dispatch(dashboardActions.setBusinessPage(val))}
               count={businessTotalItems}
-              selectHandler={selectBusinessHandler}
+              selectHandler={(val) =>
+                dispatch(
+                  dashboardActions.setSelectedBusiness({
+                    business: val,
+                    status: true,
+                  })
+                )
+              }
               parentQuery={businessQuery}
-              setParentQuery={setBusinessQuery}
+              setParentQuery={(val) =>
+                dispatch(dashboardActions.setBusinessQuery(val))
+              }
               queryTarget={businessQueryTarget}
-              setQueryTarget={setBusinessQueryTarget}
+              setQueryTarget={(val) =>
+                dispatch(dashboardActions.setBusinessQueryTarget(val))
+              }
               queryTargets={["Name", "Address", "ContactNo."]}
               headCells={[
                 {
@@ -131,13 +153,21 @@ const DashboardPage = () => {
               tableTitle="Users"
               rows={users}
               page={userPage - 1}
-              setPage={setUserPage}
+              setPage={(val) => dispatch(dashboardActions.setUserPage(val))}
               count={userTotalItems}
-              selectHandler={selectUserHandler}
+              selectHandler={(val) =>
+                dispatch(
+                  dashboardActions.setSelectedUser({ user: val, status: true })
+                )
+              }
               parentQuery={userQuery}
               queryTarget={userQueryTarget}
-              setQueryTarget={setUserQueryTarget}
-              setParentQuery={setUserQuery}
+              setQueryTarget={(val) =>
+                dispatch(dashboardActions.setUserQueryTarget(val))
+              }
+              setParentQuery={(val) =>
+                dispatch(dashboardActions.setUserQuery(val))
+              }
               queryTargets={[
                 "First name",
                 "Last name",
@@ -211,8 +241,12 @@ const DashboardPage = () => {
               page={0}
               setPage={(e) => {}}
               count={tags.length}
-              selectHandler={selectTagHandler}
-              callback={setTagDialogOpen}
+              selectHandler={(val) =>
+                dispatch(
+                  dashboardActions.setSelectedTag({ tag: val, status: true })
+                )
+              }
+              callback={() => dispatch(dashboardActions.setShowTagDialog(true))}
               fullList
               headCells={[
                 {
@@ -228,7 +262,7 @@ const DashboardPage = () => {
                   label: "Action",
                   align: "center",
                   type: "button",
-                  action: deleteTagHandler,
+                  action: (tagId) => dispatch(deleteTag(tagId)),
                 },
               ]}
             />
@@ -236,22 +270,38 @@ const DashboardPage = () => {
         </Grid>
       </Grid>
       <TagEditorDialog
-        open={tagDialogOpen}
-        handleClose={closeTagHandler}
-        saveHandler={saveTagHandler}
+        open={isShowTagDialog}
+        handleClose={() =>
+          dispatch(
+            dashboardActions.setSelectedTag({ tag: null, status: false })
+          )
+        }
+        saveHandler={(tagId, name) => dispatch(saveTag(tagId, name))}
         selectedTag={selectedTag}
       />
       <BusinessViewerDialog
-        open={businessDialogOpen}
-        handleClose={closeBusinessHandler}
-        allowHandler={allowBusinessHandler}
-        verifyHandler={verifyBusinessHandler}
+        open={isShowBusinessDialog}
+        handleClose={() =>
+          dispatch(
+            dashboardActions.setSelectedBusiness({ tag: null, status: false })
+          )
+        }
+        allowHandler={(status, businessId) =>
+          dispatch(allowBusiness(status, businessId))
+        }
+        verifyHandler={(isVerified, businessId) =>
+          dispatch(verifyBusiness(isVerified, businessId))
+        }
         selectedBusiness={selectedBusiness}
       />
       <UserViewerDialog
-        open={userDialogOpen}
-        handleClose={closeUserHandler}
-        allowHandler={allowUserHandler}
+        open={isShowUserDialog}
+        handleClose={() =>
+          dispatch(
+            dashboardActions.setSelectedUser({ tag: null, status: false })
+          )
+        }
+        allowHandler={(status, userId) => dispatch(allowUser(status, userId))}
         selectedUser={selectedUser}
       />
     </Container>

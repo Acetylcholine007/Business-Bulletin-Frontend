@@ -9,16 +9,16 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { businessActions } from "../../../store/slices/BusinessSlice";
 
-const ListPane = ({
-  selectedIndex,
-  setSelectedIndex,
-  page,
-  totalItems,
-  businesses,
-}) => {
-  if (businesses.length !== null) {
+const ListPane = () => {
+  const { selectedIndex, page, totalItems, businesses } = useSelector(
+    (state) => state.business
+  );
+  const dispatch = useDispatch();
+
+  if (businesses) {
     return (
       <>
         <List
@@ -45,7 +45,9 @@ const ListPane = ({
                   },
                 }}
                 selected={selectedIndex === index}
-                onClick={() => setSelectedIndex(index)}
+                onClick={() =>
+                  dispatch(businessActions.setSelectedIndex(index))
+                }
               >
                 <Typography variant="h5">{business.name}</Typography>
                 <Typography variant="h6">{`${business.owner.firstname} ${business.owner.lastname}`}</Typography>

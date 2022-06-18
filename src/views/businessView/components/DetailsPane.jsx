@@ -13,9 +13,15 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
-import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { businessActions } from "../../../store/slices/BusinessSlice";
 
-const DetailsPane = ({ tabIndex, selectedIndex, setTabIndex, businesses }) => {
+const DetailsPane = () => {
+  const { commodityTabIndex, selectedIndex, businesses } = useSelector(
+    (state) => state.business
+  );
+  const dispatch = useDispatch();
+
   if (businesses !== null && businesses.length !== 0) {
     return (
       <Card
@@ -49,8 +55,10 @@ const DetailsPane = ({ tabIndex, selectedIndex, setTabIndex, businesses }) => {
         </Typography>
         <Box sx={{ borderBottom: 1, borderTop: 1, borderColor: "divider" }}>
           <Tabs
-            value={tabIndex}
-            onChange={(e, val) => setTabIndex(val)}
+            value={commodityTabIndex}
+            onChange={(e, val) =>
+              dispatch(businessActions.setCommodityTabIndex(val))
+            }
             variant="fullWidth"
           >
             <Tab label="Products" />
@@ -58,7 +66,7 @@ const DetailsPane = ({ tabIndex, selectedIndex, setTabIndex, businesses }) => {
           </Tabs>
         </Box>
         <CardContent sx={{ flexGrow: 1, overflowY: "auto" }}>
-          {tabIndex === 0 && (
+          {commodityTabIndex === 0 && (
             <List>
               {businesses[selectedIndex].products.map((product, index) => (
                 <ListItem alignItems="flex-start" key={index}>
@@ -82,7 +90,7 @@ const DetailsPane = ({ tabIndex, selectedIndex, setTabIndex, businesses }) => {
               ))}
             </List>
           )}
-          {tabIndex === 1 && (
+          {commodityTabIndex === 1 && (
             <List>
               {businesses[selectedIndex].services.map((service, index) => (
                 <ListItem alignItems="flex-start" key={index}>

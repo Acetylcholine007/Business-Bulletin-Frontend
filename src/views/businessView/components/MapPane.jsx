@@ -1,13 +1,14 @@
 import React from "react";
 import AppMap from "../../../shared/components/AppMap";
+import { useDispatch, useSelector } from "react-redux";
+import { businessActions } from "../../../store/slices/BusinessSlice";
 
-const MapPane = ({
-  selectedIndex,
-  setSelectedIndex,
-  page,
-  totalItems,
-  businesses,
-}) => {
+const MapPane = () => {
+  const { selectedIndex, page, totalItems, businesses } = useSelector(
+    (state) => state.business
+  );
+  const dispatch = useDispatch();
+
   return (
     <AppMap
       isPicker={false}

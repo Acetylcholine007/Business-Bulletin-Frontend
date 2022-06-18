@@ -11,15 +11,14 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import PublicRoutes from "../routes/PublicRoutes";
-import { LoadingContext } from "../shared/contexts/LoadingContext";
-import { SnackbarContext } from "../shared/contexts/SnackbarContext";
+import { useSelector, useDispatch } from "react-redux";
+import { feedbackActions } from "../store/slices/FeedbackSlice";
 
 const PublicLayout = () => {
-  const { loadingParams } = useContext(LoadingContext);
-  const { snackbarParams, snackbarDispatch } = useContext(SnackbarContext);
+  const dispatch = useDispatch();
+  const feedbackParams = useSelector((state) => state.feedback);
   const navigate = useNavigate();
 
   return (
@@ -61,7 +60,7 @@ const PublicLayout = () => {
             </Button>
           </Stack>
         </Toolbar>
-        {loadingParams.isOpen && <LinearProgress />}
+        {feedbackParams.isLoading && <LinearProgress />}
       </AppBar>
       <Toolbar />
       <Box sx={{ flexGrow: 1, overflow: "auto", p: 3 }}>
@@ -69,19 +68,19 @@ const PublicLayout = () => {
       </Box>
       <Snackbar
         anchorOrigin={{
-          vertical: snackbarParams.vertical,
-          horizontal: snackbarParams.horizontal,
+          vertical: "bottom",
+          horizontal: "center",
         }}
-        open={snackbarParams.isOpen}
-        autoHideDuration={snackbarParams.duration}
-        onClose={() => snackbarDispatch({ type: "SET_SHOW", payload: false })}
+        open={feedbackParams.isShowSnackbar}
+        autoHideDuration={feedbackParams.snackbarDuration}
+        onClose={() => dispatch(feedbackActions.closeNotification())}
       >
         <Alert
-          onClose={() => snackbarDispatch({ type: "SET_SHOW", payload: false })}
-          severity={snackbarParams.severity}
+          onClose={() => dispatch(feedbackActions.closeNotification())}
+          severity={feedbackParams.severity}
           variant="filled"
         >
-          {snackbarParams.message}
+          {feedbackParams.snackbarMessage}
         </Alert>
       </Snackbar>
     </Box>

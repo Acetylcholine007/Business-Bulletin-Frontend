@@ -1,17 +1,10 @@
-import {
-  CancelSharp,
-  EditSharp,
-  MoreVertSharp,
-  SaveSharp,
-  VerifiedSharp,
-} from "@mui/icons-material";
+import { CancelSharp, EditSharp, SaveSharp } from "@mui/icons-material";
 import {
   Button,
   ButtonBase,
   Card,
   CardActions,
   CardHeader,
-  Chip,
   Container,
   Divider,
   Grid,
@@ -22,46 +15,50 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
-import ConfirmationDialog from "../../../shared/components/ConfirmationDialog";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import ImagePickerDialog from "../../../shared/components/ImagePickerDialog";
+import {
+  changePassword,
+  deleteBusiness,
+  editProfile,
+  fetchBusinesses,
+} from "../../../store/actions/profileActions";
+import { feedbackActions } from "../../../store/slices/FeedbackSlice";
+import { profileActions } from "../../../store/slices/ProfileSlice";
 import PasswordEditorDialog from "../components/PasswordEditorDialog";
-import { profileController } from "../controllers/profileController";
 
 const ProfilePage = () => {
+  const { userId, firstname, lastname, address, contactNo } = useSelector(
+    (state) => state.auth
+  );
   const {
     businesses,
+    profileEditMode,
+    newUser,
+    user,
     page,
-    setPage,
-    totalItems,
-    editMode,
-    setEditMode,
-    firstname,
-    lastname,
-    contactNo,
-    address,
-    profileUri,
-    newFirstname,
-    newLastname,
-    newAddress,
-    newContactNo,
-    newProfileUri,
-    setNewFirstname,
-    setNewLastname,
-    setNewContactNo,
-    setNewAddress,
-    openEditPassword,
-    setOpenEditPassword,
-    openEditProfile,
-    setOpenEditProfile,
-    selectedIndex,
-    setSelectedIndex,
-    navigate,
-    changePasswordHandler,
-    changeProfileHandler,
-    editProfileHandler,
-    deleteBusinessHandler,
-  } = profileController();
+    isShowPasswordDialog,
+    isShowImageDialog,
+  } = useSelector((state) => state.profile);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    profileActions.setUser({ userId, firstname, lastname, address, contactNo });
+    profileActions.setNewUser({
+      userId,
+      firstname,
+      lastname,
+      address,
+      contactNo,
+    });
+  }, []);
+
+  useEffect(() => {
+    dispatch(fetchBusinesses(page, userId));
+  }, []);
 
   return (
     <Container
@@ -82,31 +79,39 @@ const ProfilePage = () => {
                 </Typography>
               }
               action={
-                editMode ? (
+                profileEditMode ? (
                   <>
-                    <IconButton onClick={() => setEditMode(false)}>
+                    <IconButton
+                      onClick={() =>
+                        dispatch(profileActions.setProfileEditMode(false))
+                      }
+                    >
                       <CancelSharp />
                     </IconButton>
                     <IconButton
                       onClick={() => {
-                        setEditMode(false);
-                        editProfileHandler();
+                        dispatch(profileActions.setProfileEditMode(false));
+                        dispatch(editProfile(newUser, userId));
                       }}
                     >
                       <SaveSharp />
                     </IconButton>
                   </>
                 ) : (
-                  <IconButton onClick={() => setEditMode(true)}>
+                  <IconButton
+                    onClick={() =>
+                      dispatch(profileActions.setProfileEditMode(true))
+                    }
+                  >
                     <EditSharp />
                   </IconButton>
                 )
               }
             />
-            {!editMode && (
+            {!profileEditMode && (
               <>
                 <img
-                  src={profileUri}
+                  src={user.profileUri}
                   alt="Profile Photo"
                   style={{
                     height: "12rem",
@@ -115,21 +120,23 @@ const ProfilePage = () => {
                     borderRadius: "50%",
                   }}
                 />
-                <Typography variant="h6">{`${firstname} ${lastname}`}</Typography>
-                <Typography variant="h6">{`${address}`}</Typography>
-                <Typography variant="h6">{`${contactNo}`}</Typography>
+                <Typography variant="h6">{`${user.firstname} ${user.lastname}`}</Typography>
+                <Typography variant="h6">{`${user.address}`}</Typography>
+                <Typography variant="h6">{`${user.contactNo}`}</Typography>
               </>
             )}
-            {editMode && (
+            {profileEditMode && (
               <>
                 <ButtonBase
-                  onClick={() => setOpenEditProfile(true)}
+                  onClick={() =>
+                    dispatch(profileActions.setOpenEditProfile(true))
+                  }
                   sx={{
                     borderRadius: "50%",
                   }}
                 >
                   <img
-                    src={newProfileUri}
+                    src={newUser.profileUri}
                     alt="Profile Photo"
                     style={{
                       height: "12rem",
@@ -144,11 +151,17 @@ const ProfilePage = () => {
                   label="First Name"
                   type="text"
                   variant="filled"
-                  onChange={(e) => setNewFirstname(e.target.value)}
-                  value={newFirstname}
+                  onChange={(e) =>
+                    dispatch(
+                      profileActions.editNewUser({
+                        field: "firstname",
+                        value: e.target.value,
+                      })
+                    )
+                  }
+                  value={newUser.firstname}
                   fullWidth={true}
                   siz="small"
-                  sx={{ backgroundColor: "#f1effb" }}
                   margin="normal"
                 />
                 <TextField
@@ -156,11 +169,17 @@ const ProfilePage = () => {
                   label="Last Name"
                   type="text"
                   variant="filled"
-                  onChange={(e) => setNewLastname(e.target.value)}
-                  value={newLastname}
+                  onChange={(e) =>
+                    dispatch(
+                      profileActions.editNewUser({
+                        field: "lastname",
+                        value: e.target.value,
+                      })
+                    )
+                  }
+                  value={newUser.lastname}
                   fullWidth={true}
                   siz="small"
-                  sx={{ backgroundColor: "#f1effb" }}
                   margin="normal"
                 />
                 <TextField
@@ -168,11 +187,17 @@ const ProfilePage = () => {
                   label="Address"
                   type="text"
                   variant="filled"
-                  onChange={(e) => setNewAddress(e.target.value)}
-                  value={newAddress}
+                  onChange={(e) =>
+                    dispatch(
+                      profileActions.editNewUser({
+                        field: "address",
+                        value: e.target.value,
+                      })
+                    )
+                  }
+                  value={newUser.address}
                   fullWidth={true}
                   siz="small"
-                  sx={{ backgroundColor: "#f1effb" }}
                   margin="normal"
                 />
                 <TextField
@@ -180,11 +205,17 @@ const ProfilePage = () => {
                   label="Contact No."
                   type="text"
                   variant="filled"
-                  onChange={(e) => setNewContactNo(e.target.value)}
-                  value={newContactNo}
+                  onChange={(e) =>
+                    dispatch(
+                      profileActions.editNewUser({
+                        field: "contactNo",
+                        value: e.target.value,
+                      })
+                    )
+                  }
+                  value={newUser.contactNo}
                   fullWidth={true}
                   siz="small"
-                  sx={{ backgroundColor: "#f1effb" }}
                   margin="normal"
                 />
               </>
@@ -197,13 +228,26 @@ const ProfilePage = () => {
             >
               <Button
                 variant="contained"
-                onClick={() => setOpenEditPassword(true)}
+                onClick={() =>
+                  dispatch(profileActions.setShowPasswordDialog(true))
+                }
               >
                 Change Password
               </Button>
               <Button
                 variant="contained"
-                onClick={() => navigate("/profile/businesses/new")}
+                onClick={() => {
+                  dispatch(feedbackActions.setLoading(true));
+                  dispatch(
+                    profileActions.setBusiness({
+                      products: [],
+                      services: [],
+                      tags: [],
+                      credentials: [],
+                    })
+                  );
+                  navigate("/profile/businesses/new");
+                }}
               >
                 Create New Business
               </Button>
@@ -242,11 +286,11 @@ const ProfilePage = () => {
                         borderRadius: 1,
                       },
                     }}
-                    onClick={() =>
-                      navigate(`/profile/businesses/${business._id}/edit`, {
-                        state: { business },
-                      })
-                    }
+                    onClick={() => {
+                      dispatch(feedbackActions.setLoading(true));
+                      dispatch(profileActions.setBusiness(business));
+                      navigate(`/profile/businesses/${business._id}/edit`);
+                    }}
                   >
                     <Typography variant="h5">{business.name}</Typography>
                     <Divider />
@@ -261,7 +305,7 @@ const ProfilePage = () => {
                         color="error"
                         onClick={(e) => {
                           e.stopPropagation();
-                          deleteBusinessHandler(business._id);
+                          dispatch(deleteBusiness(business._id));
                         }}
                       >
                         Delete
@@ -274,15 +318,24 @@ const ProfilePage = () => {
         </Grid>
       </Grid>
       <PasswordEditorDialog
-        open={openEditPassword}
-        handleClose={() => setOpenEditPassword(false)}
-        saveHandler={changePasswordHandler}
+        open={isShowPasswordDialog}
+        handleClose={() =>
+          dispatch(profileActions.setShowPasswordDialog(false))
+        }
+        saveHandler={(password) => dispatch(changePassword(password, userId))}
       />
       <ImagePickerDialog
-        open={openEditProfile}
-        handleClose={() => setOpenEditProfile(false)}
-        saveHandler={changeProfileHandler}
-        imageUri={newProfileUri}
+        open={isShowImageDialog}
+        handleClose={() => dispatch(profileActions.setShowImageDialog(false))}
+        saveHandler={(val) =>
+          dispatch(
+            profileActions.editNewUser({
+              field: "profileUri",
+              value: val,
+            })
+          )
+        }
+        imageUri={newUser.profileUri}
       />
     </Container>
   );

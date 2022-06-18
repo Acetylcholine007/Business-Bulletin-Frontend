@@ -129,13 +129,13 @@ export default function ProductEditorDialog({
       <DialogActions>
         <Button
           onClick={() => {
-            saveHandler(!!product, {
+            saveHandler(product === null, {
               _id: product ? product._id : Math.random(),
               name,
               description,
               price,
               imagesUri,
-              businessId: product?.business,
+              business: product?.business,
             });
             handleClose();
           }}
