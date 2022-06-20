@@ -5,6 +5,12 @@ const businessSlice = createSlice({
   initialState: {
     initialized: false,
     businesses: null,
+    mapCenter: {
+      lat: 14.830121812143584,
+      lng: 120.80162571435547,
+    },
+    mapZoom: 8,
+    isShowMarkerInfo: false,
     tags: null,
     selectedTags: [],
     page: 1,
@@ -22,6 +28,15 @@ const businessSlice = createSlice({
       state.businesses = action.payload.businesses;
       state.totalItems = action.payload.totalItems;
       state.initialized = true;
+    },
+    setMapCenter(state, action) {
+      state.mapCenter = action.payload;
+    },
+    setMapZoom(state, action) {
+      state.mapZoom = action.payload;
+    },
+    setShowMarkerInfo(state, action) {
+      state.isShowMarkerInfo = action.payload;
     },
     setBusinesses(state, action) {
       state.businesses = action.payload.businesses;

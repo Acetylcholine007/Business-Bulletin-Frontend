@@ -24,7 +24,7 @@ function AppMap({ target, center }) {
     <GoogleMap
       mapContainerStyle={{ height: "100%", width: "100%" }}
       center={center}
-      zoom={8}
+      zoom={10}
       onLoad={onLoad}
       onUnmount={onUnmount}
     >

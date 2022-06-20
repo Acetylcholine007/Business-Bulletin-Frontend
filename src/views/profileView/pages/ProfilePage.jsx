@@ -240,6 +240,10 @@ const ProfilePage = () => {
                   dispatch(feedbackActions.setLoading(true));
                   dispatch(
                     profileActions.setBusiness({
+                      coordinates: {
+                        lat: 14.830121812143584,
+                        lng: 120.80162571435547,
+                      },
                       products: [],
                       services: [],
                       tags: [],

@@ -20,7 +20,6 @@ const profileSlice = createSlice({
     isShowServiceDialog: false,
     isShowLogoDialog: false,
     isShowBannerDialog: false,
-    isShowLocationDialog: false,
   },
   reducers: {
     setBusinesses(state, action) {
@@ -135,9 +134,6 @@ const profileSlice = createSlice({
     },
     setShowBannerDialog(state, action) {
       state.isShowBannerDialog = action.payload;
-    },
-    setShowLocationDialog(state, action) {
-      state.isShowLocationDialog = action.payload;
     },
     setShowProductDialog(state, action) {
       state.selectedProduct = action.payload.product;
