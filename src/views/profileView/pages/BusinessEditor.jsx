@@ -42,6 +42,7 @@ import {
 } from "../../../store/actions/profileActions";
 import { useNavigate } from "react-router-dom";
 import { feedbackActions } from "../../../store/slices/FeedbackSlice";
+import LocationPickerCard from "../components/LocationPickerCard";
 
 const BusinessEditor = ({ isCreator }) => {
   const {
@@ -272,12 +273,15 @@ const BusinessEditor = ({ isCreator }) => {
           <Grid item xs={12} md={4} sx={{ height: "100%" }}>
             <Stack spacing={2} sx={{ height: "100%" }}>
               <Card
-                sx={{ height: "50%", display: "flex", flexDirection: "column" }}
+                sx={{ height: "35%", display: "flex", flexDirection: "column" }}
               >
                 <CardHeader
                   title="Products"
                   action={
-                    <IconButton
+                    <Button
+                      sx={{ color: "white" }}
+                      variant="contained"
+                      startIcon={<AddCircleSharp />}
                       onClick={() => {
                         dispatch(
                           profileActions.setShowProductDialog({
@@ -287,8 +291,8 @@ const BusinessEditor = ({ isCreator }) => {
                         );
                       }}
                     >
-                      <AddCircleSharp />
-                    </IconButton>
+                      ADD
+                    </Button>
                   }
                 />
                 <List sx={{ flexGrow: 1, overflowY: "auto" }}>
@@ -339,12 +343,15 @@ const BusinessEditor = ({ isCreator }) => {
                 </List>
               </Card>
               <Card
-                sx={{ height: "50%", display: "flex", flexDirection: "column" }}
+                sx={{ height: "35%", display: "flex", flexDirection: "column" }}
               >
                 <CardHeader
                   title="Services"
                   action={
-                    <IconButton
+                    <Button
+                      sx={{ color: "white" }}
+                      startIcon={<AddCircleSharp />}
+                      variant="contained"
                       onClick={() =>
                         dispatch(
                           profileActions.setShowServiceDialog({
@@ -354,8 +361,8 @@ const BusinessEditor = ({ isCreator }) => {
                         )
                       }
                     >
-                      <AddCircleSharp />
-                    </IconButton>
+                      ADD
+                    </Button>
                   }
                 />
                 <List sx={{ flexGrow: 1, overflowY: "auto" }}>
@@ -405,6 +412,13 @@ const BusinessEditor = ({ isCreator }) => {
                   ))}
                 </List>
               </Card>
+
+              <Card
+                sx={{ height: "35%", display: "flex", flexDirection: "column" }}
+              >
+                <CardHeader title="Set Location" />
+                <LocationPickerCard isNew={isCreator} />
+              </Card>
             </Stack>
           </Grid>
         </Grid>
@@ -449,21 +463,6 @@ const BusinessEditor = ({ isCreator }) => {
                   dispatch(editorSaveProduct(isNew, product));
                 }
           }
-        />
-        <LocationPickerDialog
-          open={isShowLocationDialog}
-          handleClose={() =>
-            dispatch(profileActions.setShowLocationDialog(false))
-          }
-          saveHandler={() => {
-            (lat, lng) =>
-              dispatch(
-                profileActions.editBusiness({
-                  field: "coordinates",
-                  value: { lat, lng },
-                })
-              );
-          }}
         />
         <ImagePickerDialog
           open={isShowLogoDialog}
