@@ -10,7 +10,6 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { feedbackActions } from "../../../store/slices/FeedbackSlice";
 import { profileActions } from "../../../store/slices/ProfileSlice";
-import { MAP_API } from "../../../utils/constants";
 
 const errorMessageGenerator = (error) => {
   switch (error.code) {
@@ -83,7 +82,7 @@ const LocationPickerCard = ({ isNew }) => {
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: MAP_API,
+    googleMapsApiKey: import.meta.env.MAP_API,
   });
 
   const loadHandler = (map) => {

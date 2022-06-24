@@ -12,7 +12,6 @@ import {
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { businessActions } from "../../../store/slices/BusinessSlice";
-import { MAP_API } from "../../../utils/constants";
 
 function MapPane() {
   const { businesses, selectedIndex, mapCenter, mapZoom, isShowMarkerInfo } =
@@ -22,7 +21,7 @@ function MapPane() {
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: MAP_API,
+    googleMapsApiKey: import.meta.env.MAP_API,
   });
 
   const fitBounds = (map) => {

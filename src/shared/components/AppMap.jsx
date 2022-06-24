@@ -1,11 +1,10 @@
 import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
 import { useCallback, useState } from "react";
-import { MAP_API } from "../../utils/constants";
 
 function AppMap({ target, center }) {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: MAP_API,
+    googleMapsApiKey: import.meta.env.VITE_MAP_API,
   });
 
   const [map, setMap] = useState(null);

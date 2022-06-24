@@ -8,7 +8,6 @@ import "./App.css";
 import { useEffect } from "react";
 import { logout } from "./store/actions/authActions";
 import { useNavigate } from "react-router-dom";
-import { LS_USER_DATA } from "./utils/constants";
 import { authActions } from "./store/slices/AuthSlice";
 import { profileActions } from "./store/slices/ProfileSlice";
 
@@ -41,7 +40,7 @@ function App() {
 
   // AUTO LOGIN
   useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem(LS_USER_DATA));
+    const storedData = JSON.parse(localStorage.getItem(import.meta.env.VITE_LS_USER_DATA));
     if (
       storedData &&
       storedData.token &&

@@ -1,5 +1,4 @@
 import AuthAPI from "../../shared/apis/AuthAPI";
-import { LS_USER_DATA } from "../../utils/constants";
 import { authActions } from "../slices/AuthSlice";
 import { feedbackActions } from "../slices/FeedbackSlice";
 import { profileActions } from "../slices/ProfileSlice";
@@ -25,7 +24,7 @@ export const login = (email, password, tokenExpirationDate, navigate) => {
       dispatch(profileActions.setUser(response.user));
       dispatch(profileActions.setNewUser(response.user));
       localStorage.setItem(
-        LS_USER_DATA,
+        import.meta.env.VITE_LS_USER_DATA,
         JSON.stringify({
           userId: response.user.userId,
           token: response.user.token,
@@ -82,7 +81,7 @@ export const signup = (user, navigate) => {
 export const logout = (navigate) => {
   return async (dispatch) => {
     dispatch(authActions.setData({}));
-    localStorage.removeItem(LS_USER_DATA);
+    localStorage.removeItem(import.meta.env.VITE_LS_USER_DATA);
     navigate("/");
   };
 };

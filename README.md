@@ -1,5 +1,12 @@
 # Business Bulletin Frontend
 
+## Overview
+React implementation of business finder single page application deployed in Google Firebase Hosting.
+
+## Usage
+- Run `npm install` to install dependencies
+- Run `npm run dev` to start development server
+
 ## API Endpoints needed by Web Client
 
 ### Authentication-related endpoints
@@ -156,7 +163,7 @@
 
   - **Usage:** For creating business
   - **Headers:** `{Authorization: Bearer token}`
-  - **Request Body:** `{name: String, description: String, address: String, contactNo: String, tags: [Tag._id], lat: Number, lng: Number, logoUri: String, bannerUri: String, credentials: [String], products: [Products], services: [Services]}`
+  - **Request Body:** `{name: String, description: String, address: String, contactNo: String, tags: [Tag._id], coordinates: {lat: Number, lng: Number}, logoUri: String, bannerUri: String, credentials: [String], products: [Products], services: [Services]}`
   - **Response:** `{message: String, business: Business}`
   - **Query parameters:** None
   - **Accessibility:** Users
@@ -338,11 +345,10 @@
   - **Query parameters:** None
   - **Accessibility:** Admin
 
-## Entities and Schema
+## Entities
 
 - User<br/>
   `{`<br/>
-  ` _id: [INT, NN, UQ, AI, PK],`<br/>
   ` firstname: [String, NN],`<br/>
   ` lastname: [String, NN],`<br/>
   ` email: [String, NN, UQ],`<br/>
@@ -359,7 +365,6 @@
 
 - Business<br/>
   `{`<br/>
-  ` _id: [INT, NN, UQ, AI, PK],`<br/>
   ` name: [String, NN],`<br/>
   ` description: [String, NN],`<br/>
   ` address: [String, NN, UQ],`<br/>
@@ -370,8 +375,10 @@
   ` products: [Array of Product._id, FK],`<br/>
   ` services: [Array of Service._id, FK],`<br/>
   ` tags: [Array of Tag._id, FK],`<br/>
-  ` lat: [Number],`<br/>
-  ` lng: Number],`<br/>
+  ` coordinates: {`<br/>
+  `   lat: [Number],`<br/>
+  `   lng: [Number],`<br/>
+  ` },`<br/>
   ` logoUri: [String],`<br/>
   ` bannerUri: [String],`<br/>
   ` credentials: [Array of String],`<br/>
@@ -381,7 +388,6 @@
 
 - Product<br/>
   `{`<br/>
-  ` _id: [INT, NN, UQ, AI, PK],`<br/>
   ` name: [String, NN],`<br/>
   ` description: [String, NN],`<br/>
   ` price: [Number, NN],`<br/>
@@ -393,7 +399,6 @@
 
 - Service<br/>
   `{`<br/>
-  ` _id: [INT, NN, UQ, AI, PK],`<br/>
   ` name: [String, NN],`<br/>
   ` description: [String, NN],`<br/>
   ` price: [Number, NN],`<br/>
@@ -405,6 +410,5 @@
 
 - Tag<br/>
   `{`<br/>
-  ` _id: [INT, NN, UQ, AI, PK],`<br/>
   ` name: [String, NN]`<br/>
   `}`<br/>
